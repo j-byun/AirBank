@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class EnvelopeResponse<T> {
 
 	@Builder.Default
-	private String code = "200";
+	private Integer code = 200;
 
 	@Builder.Default
 	private String message = "success";
