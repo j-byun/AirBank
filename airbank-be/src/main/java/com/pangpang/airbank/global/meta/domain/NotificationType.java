@@ -2,8 +2,8 @@ package com.pangpang.airbank.global.meta.domain;
 
 import java.util.Arrays;
 
-import com.pangpang.airbank.global.meta.exception.MetaErrorInfo;
-import com.pangpang.airbank.global.meta.exception.MetaException;
+import com.pangpang.airbank.global.error.exception.MetaException;
+import com.pangpang.airbank.global.error.info.MetaErrorInfo;
 
 import lombok.Getter;
 
