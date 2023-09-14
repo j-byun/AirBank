@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pangpang.airbank.domain.group.domain.MemberRelationship;
 import com.pangpang.airbank.domain.group.dto.GetPartnersResponseDto;
@@ -22,6 +23,7 @@ public class GroupServiceImpl implements GroupService {
 	private final MemberRelationshipRepository memberRelationshipRepository;
 	private final MemberRepository memberRepository;
 
+	@Transactional(readOnly = true)
 	public GetPartnersResponseDto getPartners(Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
