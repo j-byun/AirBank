@@ -85,8 +85,7 @@ public class GroupServiceImpl implements GroupService {
 		MemberRelationship memberRelationship = memberRelationshipRepository.findByIdAndChildId(groupId, member.getId())
 			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_MEMBER_RELATIONSHIP_BY_CHILD));
 
-		Boolean isAccept = patchConfirmRequestDto.getIsAccept();
-		if (isAccept) {
+		if (patchConfirmRequestDto.getIsAccept()) {
 			memberRelationship.setActivated(true);
 		}
 
