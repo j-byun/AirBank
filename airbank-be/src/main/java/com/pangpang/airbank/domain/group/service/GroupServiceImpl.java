@@ -53,7 +53,6 @@ public class GroupServiceImpl implements GroupService {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
 
-		// 부모가 아니면
 		if (!member.getRole().getName().equals(MemberRole.PARENT.getName())) {
 			throw new GroupException(GroupErrorInfo.ENROLL_PERMISSION_DENIED);
 		}
@@ -61,14 +60,10 @@ public class GroupServiceImpl implements GroupService {
 		Member childMember = memberRepository.findByChildPhoneNumber(postEnrollChildRequestDto.getPhoneNumber())
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_CHILD_MEMBER_BY_PHONE_NUMBER));
 
-		log.info(childMember.getName());
-
-		// 자녀가 이미 부모를 보유
 		if (memberRelationshipRepository.existsByChildIdAsActive(childMember.getId())) {
 			throw new GroupException(GroupErrorInfo.ALREADY_HAD_PARENT);
 		}
 
-		// 이미 등록 진행중
 		if (memberRelationshipRepository.existsByChildIdAsNoneActive(childMember.getId())) {
 			throw new GroupException(GroupErrorInfo.ENROLL_IN_PROGRESS);
 		}
