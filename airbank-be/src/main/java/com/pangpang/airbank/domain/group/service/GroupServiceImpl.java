@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pangpang.airbank.domain.group.domain.MemberRelationship;
 import com.pangpang.airbank.domain.group.dto.GetPartnersResponseDto;
+import com.pangpang.airbank.domain.group.dto.PostEnrollChildRequestDto;
 import com.pangpang.airbank.domain.group.repository.MemberRelationshipRepository;
 import com.pangpang.airbank.domain.member.domain.Member;
 import com.pangpang.airbank.domain.member.repository.MemberRepository;
@@ -24,6 +25,7 @@ public class GroupServiceImpl implements GroupService {
 	private final MemberRepository memberRepository;
 
 	@Transactional(readOnly = true)
+	@Override
 	public GetPartnersResponseDto getPartners(Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
@@ -39,5 +41,18 @@ public class GroupServiceImpl implements GroupService {
 		}
 
 		return GetPartnersResponseDto.of(memberRelationships, member);
+	}
+
+	@Transactional
+	@Override
+	public Long enrollChild(Long memberId, PostEnrollChildRequestDto postEnrollChildRequestDto) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
+
+		Member childMember = memberRepository.findByPhoneNumber(postEnrollChildRequestDto.getPhoneNumber())
+			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER_BY_PHONE_NUMBER));
+
+		MemberRelationship memberRelationship = MemberRelationship.of(member, childMember);
+		return memberRelationshipRepository.save(memberRelationship).getId();
 	}
 }
