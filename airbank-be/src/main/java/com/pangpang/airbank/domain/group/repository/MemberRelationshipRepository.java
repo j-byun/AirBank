@@ -1,6 +1,7 @@
 package com.pangpang.airbank.domain.group.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,5 +31,7 @@ public interface MemberRelationshipRepository extends JpaRepository<MemberRelati
 		+ "from member_relationship m "
 		+ "where m.child.id = :childId and m.activated = false ")
 	Boolean existsByChildIdAsNoneActive(@Param("childId") Long childId);
+
+	Optional<MemberRelationship> findByIdAndChildId(Long id, Long childId);
 
 }

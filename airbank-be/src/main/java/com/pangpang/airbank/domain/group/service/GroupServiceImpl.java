@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pangpang.airbank.domain.group.domain.MemberRelationship;
 import com.pangpang.airbank.domain.group.dto.GetPartnersResponseDto;
+import com.pangpang.airbank.domain.group.dto.PatchConfirmRequestDto;
 import com.pangpang.airbank.domain.group.dto.PostEnrollChildRequestDto;
 import com.pangpang.airbank.domain.group.repository.MemberRelationshipRepository;
 import com.pangpang.airbank.domain.member.domain.Member;
@@ -68,5 +69,28 @@ public class GroupServiceImpl implements GroupService {
 
 		MemberRelationship memberRelationship = MemberRelationship.of(member, childMember);
 		return memberRelationshipRepository.save(memberRelationship).getId();
+
+	}
+
+	@Transactional
+	@Override
+	public Long confirmEnrollment(Long memberId, PatchConfirmRequestDto patchConfirmRequestDto, Long groupId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
+
+		if (!member.getRole().getName().equals(MemberRole.CHILD.getName())) {
+			throw new GroupException(GroupErrorInfo.CONFIRM_PERMISSION_DENIED);
+		}
+
+		MemberRelationship memberRelationship = memberRelationshipRepository.findByIdAndChildId(groupId, member.getId())
+			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_MEMBER_RELATIONSHIP_BY_CHILD));
+
+		Boolean isAccept = patchConfirmRequestDto.getIsAccept();
+		if (isAccept) {
+			memberRelationship.setActivated(true);
+		}
+
+		memberRelationship.setActivated(false);
+		return memberRelationship.getId();
 	}
 }
