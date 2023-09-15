@@ -59,17 +59,18 @@ public class GroupServiceImpl implements GroupService {
 		Member childMember = memberRepository.findByChildPhoneNumber(postEnrollChildRequestDto.getPhoneNumber())
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_CHILD_MEMBER_BY_PHONE_NUMBER));
 
-		if (memberRelationshipRepository.existsByChildIdAsActive(childMember.getId())) {
-			throw new GroupException(GroupErrorInfo.ALREADY_HAD_PARENT);
-		}
-
-		if (memberRelationshipRepository.existsByChildIdAsNoneActive(childMember.getId())) {
-			throw new GroupException(GroupErrorInfo.ENROLL_IN_PROGRESS);
-		}
+		memberRelationshipRepository.findByChildId(childMember.getId())
+			.ifPresent(
+				(memberRelationship) -> {
+					if (memberRelationship.getActivated()) {
+						throw new GroupException(GroupErrorInfo.ALREADY_HAD_PARENT);
+					}
+					throw new GroupException(GroupErrorInfo.ENROLL_IN_PROGRESS);
+				}
+			);
 
 		MemberRelationship memberRelationship = MemberRelationship.of(member, childMember);
 		return memberRelationshipRepository.save(memberRelationship).getId();
-
 	}
 
 	@Transactional
