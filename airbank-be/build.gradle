@@ -30,6 +30,9 @@ dependencies {
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // WebClient API호출
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
 }
 
 tasks.named('test') {

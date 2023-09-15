@@ -23,7 +23,7 @@ public class MemberController {
 	private final MemberService memberService;
 
 	@GetMapping()
-	private ResponseEntity<EnvelopeResponse<GetMemberResponseDto>> getMember(HttpServletRequest request,
+	public ResponseEntity<EnvelopeResponse<GetMemberResponseDto>> getMember(HttpServletRequest request,
 		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument) {
 
 		return ResponseEntity.ok()
