@@ -87,6 +87,7 @@ public class GroupServiceImpl implements GroupService {
 
 		if (patchConfirmRequestDto.getIsAccept()) {
 			memberRelationship.setActivated(true);
+			return memberRelationship.getId();
 		}
 
 		memberRelationship.setActivated(false);
