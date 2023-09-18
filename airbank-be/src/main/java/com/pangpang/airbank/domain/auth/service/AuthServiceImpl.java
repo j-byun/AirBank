@@ -67,15 +67,16 @@ public class AuthServiceImpl implements AuthService {
 	 */
 	@Override
 	public GetKakaoAccessTokenResponseDto getKakaoAccessToken(String code) {
-		if (code == null)
+		if (code == null) {
 			throw new AuthException((AuthErrorInfo.INVALID_AUTH_CODE));
+		}
 
 		MultiValueMap<String, String> params = setParameters(code);
 		try {
 			return WebClient.create()
 				.post()
 				.uri(KAKAO_AUTH_URI)
-				.header("Content-type","application/x-www-form-urlencoded;charset=utf-8" )
+				.header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
 				.bodyValue(params)
 				.retrieve()
 				.bodyToMono(GetKakaoAccessTokenResponseDto.class)
@@ -102,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
 
 		return params;
 	}
-	
+
 	/**
 	 *  토큰으로 사용자 정보 조회
 	 *

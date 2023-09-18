@@ -30,7 +30,8 @@ public class MemberController {
 	 * @see AuthenticationArgumentResolver
 	 */
 	@GetMapping()
-	public ResponseEntity<EnvelopeResponse<GetMemberResponseDto>> getMember(@Authentication AuthenticatedMemberArgument authenticatedMemberArgument) {
+	public ResponseEntity<EnvelopeResponse<GetMemberResponseDto>> getMember(
+		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument) {
 
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<GetMemberResponseDto>builder()

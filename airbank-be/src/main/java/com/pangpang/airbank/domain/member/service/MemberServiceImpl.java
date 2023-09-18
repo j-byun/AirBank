@@ -34,7 +34,7 @@ public class MemberServiceImpl implements MemberService {
 
 		return GetMemberResponseDto.from(member);
 	}
-	
+
 	/**
 	 *  카카오 식별자로 사용자 조회
 	 * 
@@ -62,7 +62,9 @@ public class MemberServiceImpl implements MemberService {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Member saveMember(PostLoginRequestDto postLoginRequestDto) {
-		Member member = Member.of(postLoginRequestDto.getId(), postLoginRequestDto.getKakao_account().getProfile().getProfile_image_url(), postLoginRequestDto.getKakao_account().getProfile().getIs_default_image());
+		Member member = Member.of(postLoginRequestDto.getId(),
+			postLoginRequestDto.getKakao_account().getProfile().getProfile_image_url(),
+			postLoginRequestDto.getKakao_account().getProfile().getIs_default_image());
 		memberRepository.save(member);
 		return member;
 	}

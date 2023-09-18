@@ -53,7 +53,8 @@ public class AuthController {
 	 * @return 현재 로그인한 사용자의 이름과 휴대폰번호
 	 */
 	@GetMapping("/callback")
-	public ResponseEntity<EnvelopeResponse<GetLoginResponseDto>> login(HttpServletRequest request, @RequestParam("code") GetLoginRequestDto getLoginRequestDto){
+	public ResponseEntity<EnvelopeResponse<GetLoginResponseDto>> login(HttpServletRequest request,
+		@RequestParam("code") GetLoginRequestDto getLoginRequestDto) {
 		HttpSession session = request.getSession();
 
 		String accessToken = authService.getKakaoAccessToken(getLoginRequestDto.getCode()).getAccess_token();

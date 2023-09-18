@@ -77,8 +77,9 @@ public class Member extends BaseTimeEntity {
 	}
 
 	private static String getImageUrl(String imageUrl, Boolean isDefaultImage) {
-		if (isDefaultImage)
+		if (isDefaultImage) {
 			return null;
+		}
 		return imageUrl;
 	}
 }

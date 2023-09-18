@@ -8,6 +8,8 @@ import com.pangpang.airbank.domain.member.dto.PostLoginRequestDto;
 public interface MemberService {
 
 	GetMemberResponseDto getMember(Long memberId);
+
 	Member getMemberByOauthIdentifier(PostLoginRequestDto postLoginRequestDto);
+
 	Member saveMember(PostLoginRequestDto postLoginRequestDto);
 }

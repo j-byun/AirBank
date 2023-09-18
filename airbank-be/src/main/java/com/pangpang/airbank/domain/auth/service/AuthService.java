@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public interface AuthService {
 	void sendRedirectUrl(HttpServletResponse response);
+
 	GetKakaoAccessTokenResponseDto getKakaoAccessToken(String code);
+
 	PostLoginRequestDto getKakaoProfile(String accessToken);
 }
