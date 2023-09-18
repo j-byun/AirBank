@@ -12,13 +12,13 @@ public class CommonFundManagementResponseDto {
 	private Integer confiscationRate;
 	private Long loanLimit;
 
-	public static CommonFundManagementResponseDto of(PatchFundManagementRequestDto patchFundManagementRequestDto) {
+	public static CommonFundManagementResponseDto of(CommonFundManagementRequestDto commonFundManagementRequestDto) {
 		return CommonFundManagementResponseDto.builder()
-			.taxRate(patchFundManagementRequestDto.getTaxRate())
-			.allowanceAmount(patchFundManagementRequestDto.getAllowanceAmount())
-			.allowanceDate(patchFundManagementRequestDto.getAllowanceDate())
-			.confiscationRate(patchFundManagementRequestDto.getConfiscationRate())
-			.loanLimit(patchFundManagementRequestDto.getLoanLimit())
+			.taxRate(commonFundManagementRequestDto.getTaxRate())
+			.allowanceAmount(commonFundManagementRequestDto.getAllowanceAmount())
+			.allowanceDate(commonFundManagementRequestDto.getAllowanceDate())
+			.confiscationRate(commonFundManagementRequestDto.getConfiscationRate())
+			.loanLimit(commonFundManagementRequestDto.getLoanLimit())
 			.build();
 	}
 }

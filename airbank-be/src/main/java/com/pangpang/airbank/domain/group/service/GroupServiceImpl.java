@@ -9,10 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pangpang.airbank.domain.fund.domain.FundManagement;
 import com.pangpang.airbank.domain.fund.repository.FundManagementRepository;
 import com.pangpang.airbank.domain.group.domain.MemberRelationship;
+import com.pangpang.airbank.domain.group.dto.CommonFundManagementRequestDto;
 import com.pangpang.airbank.domain.group.dto.CommonFundManagementResponseDto;
 import com.pangpang.airbank.domain.group.dto.GetPartnersResponseDto;
 import com.pangpang.airbank.domain.group.dto.PatchConfirmRequestDto;
-import com.pangpang.airbank.domain.group.dto.PatchFundManagementRequestDto;
 import com.pangpang.airbank.domain.group.dto.PostEnrollChildRequestDto;
 import com.pangpang.airbank.domain.group.repository.MemberRelationshipRepository;
 import com.pangpang.airbank.domain.member.domain.Member;
@@ -102,7 +102,7 @@ public class GroupServiceImpl implements GroupService {
 	@Transactional
 	@Override
 	public CommonFundManagementResponseDto updateFundManagement(Long memberId,
-		PatchFundManagementRequestDto patchFundManagementRequestDto, Long groupId) {
+		CommonFundManagementRequestDto commonFundManagementRequestDto, Long groupId) {
 
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
@@ -118,8 +118,8 @@ public class GroupServiceImpl implements GroupService {
 		FundManagement fundManagement = fundManagementRepository.findByMemberRelationshipId(memberRelationship.getId())
 			.orElseThrow(() -> new FundException(FundErrorInfo.NOT_FOUND_FUND_MANAGEMENT_BY_ID));
 
-		fundManagement.updateFundManagement(patchFundManagementRequestDto);
-		return CommonFundManagementResponseDto.of(patchFundManagementRequestDto);
+		fundManagement.updateFundManagement(commonFundManagementRequestDto);
+		return CommonFundManagementResponseDto.of(commonFundManagementRequestDto);
 	}
 
 }

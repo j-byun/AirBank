@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pangpang.airbank.domain.group.dto.CommonFundManagementRequestDto;
 import com.pangpang.airbank.domain.group.dto.CommonFundManagementResponseDto;
 import com.pangpang.airbank.domain.group.dto.GetPartnersResponseDto;
 import com.pangpang.airbank.domain.group.dto.PatchConfirmRequestDto;
-import com.pangpang.airbank.domain.group.dto.PatchFundManagementRequestDto;
 import com.pangpang.airbank.domain.group.dto.PostEnrollChildRequestDto;
 import com.pangpang.airbank.domain.group.service.GroupService;
 import com.pangpang.airbank.global.common.response.EnvelopeResponse;
@@ -66,25 +66,25 @@ public class GroupController {
 
 	@PostMapping("/fund")
 	public ResponseEntity<EnvelopeResponse<CommonFundManagementResponseDto>> saveFundManagement(
-		@RequestBody PatchFundManagementRequestDto patchFundManagementRequestDto, @RequestParam() Long groupId) {
+		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto, @RequestParam() Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
 
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<CommonFundManagementResponseDto>builder()
 				.code(HttpStatus.OK.value())
-				.data(groupService.updateFundManagement(member.getMemberId(), patchFundManagementRequestDto, groupId))
+				.data(null)
 				.build());
 	}
 
 	@PatchMapping("/fund")
 	public ResponseEntity<EnvelopeResponse<CommonFundManagementResponseDto>> updateFundManagement(
-		@RequestBody PatchFundManagementRequestDto patchFundManagementRequestDto, @RequestParam() Long groupId) {
+		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto, @RequestParam() Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
 
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<CommonFundManagementResponseDto>builder()
 				.code(HttpStatus.OK.value())
-				.data(groupService.updateFundManagement(member.getMemberId(), patchFundManagementRequestDto, groupId))
+				.data(groupService.updateFundManagement(member.getMemberId(), commonFundManagementRequestDto, groupId))
 				.build());
 	}
 }

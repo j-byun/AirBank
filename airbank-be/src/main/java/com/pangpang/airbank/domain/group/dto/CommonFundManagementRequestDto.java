@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PatchFundManagementRequestDto {
+public class CommonFundManagementRequestDto {
 	private Integer taxRate;
 	private Long allowanceAmount;
 	private Integer allowanceDate;
