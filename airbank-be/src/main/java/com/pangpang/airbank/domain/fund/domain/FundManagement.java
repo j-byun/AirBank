@@ -3,6 +3,7 @@ package com.pangpang.airbank.domain.fund.domain;
 import org.hibernate.annotations.ColumnDefault;
 
 import com.pangpang.airbank.domain.group.domain.MemberRelationship;
+import com.pangpang.airbank.domain.group.dto.PatchFundManagementRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,7 +64,14 @@ public class FundManagement {
 
 	@NotNull
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_relationship_id",
-		foreignKey = @ForeignKey(name = "fk_fund_management_to_member_relationship_member_relationship_id"))
+	@JoinColumn(name = "member_relationship_id", foreignKey = @ForeignKey(name = "fk_fund_management_to_member_relationship_member_relationship_id"))
 	private MemberRelationship memberRelationship;
+
+	public void updateFundManagement(PatchFundManagementRequestDto patchFundManagementRequestDto) {
+		this.taxRate = patchFundManagementRequestDto.getTaxRate();
+		this.allowanceAmount = patchFundManagementRequestDto.getAllowanceAmount();
+		this.allowanceDate = patchFundManagementRequestDto.getAllowanceDate();
+		this.confiscationRate = patchFundManagementRequestDto.getConfiscationRate();
+		this.loanLimit = patchFundManagementRequestDto.getLoanLimit();
+	}
 }
