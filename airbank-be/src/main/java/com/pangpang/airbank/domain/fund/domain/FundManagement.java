@@ -64,7 +64,8 @@ public class FundManagement {
 
 	@NotNull
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_relationship_id", foreignKey = @ForeignKey(name = "fk_fund_management_to_member_relationship_member_relationship_id"))
+	@JoinColumn(name = "member_relationship_id",
+		foreignKey = @ForeignKey(name = "fk_fund_management_to_member_relationship_member_relationship_id"))
 	private MemberRelationship memberRelationship;
 
 	public void updateFundManagement(CommonFundManagementRequestDto commonFundManagementRequestDto) {
