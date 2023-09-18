@@ -5,15 +5,15 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CommonFundManagementResponseDto {
+public class PatchFundManagementResponseDto {
 	private Integer taxRate;
 	private Long allowanceAmount;
 	private Integer allowanceDate;
 	private Integer confiscationRate;
 	private Long loanLimit;
 
-	public static CommonFundManagementResponseDto from(CommonFundManagementRequestDto commonFundManagementRequestDto) {
-		return CommonFundManagementResponseDto.builder()
+	public static PatchFundManagementResponseDto from(CommonFundManagementRequestDto commonFundManagementRequestDto) {
+		return PatchFundManagementResponseDto.builder()
 			.taxRate(commonFundManagementRequestDto.getTaxRate())
 			.allowanceAmount(commonFundManagementRequestDto.getAllowanceAmount())
 			.allowanceDate(commonFundManagementRequestDto.getAllowanceDate())

@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pangpang.airbank.domain.group.dto.CommonFundManagementRequestDto;
-import com.pangpang.airbank.domain.group.dto.CommonFundManagementResponseDto;
+import com.pangpang.airbank.domain.group.dto.CommonIdResponseDto;
 import com.pangpang.airbank.domain.group.dto.GetPartnersResponseDto;
 import com.pangpang.airbank.domain.group.dto.PatchConfirmRequestDto;
+import com.pangpang.airbank.domain.group.dto.PatchFundManagementResponseDto;
 import com.pangpang.airbank.domain.group.dto.PostEnrollChildRequestDto;
 import com.pangpang.airbank.domain.group.service.GroupService;
 import com.pangpang.airbank.global.common.response.EnvelopeResponse;
@@ -41,48 +42,48 @@ public class GroupController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<EnvelopeResponse<Long>> enrollChild(
+	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> enrollChild(
 		@RequestBody PostEnrollChildRequestDto postEnrollChildRequestDto) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(EnvelopeResponse.<Long>builder()
+			.body(EnvelopeResponse.<CommonIdResponseDto>builder()
 				.code(HttpStatus.CREATED.value())
 				.data(groupService.enrollChild(member.getMemberId(), postEnrollChildRequestDto))
 				.build());
 	}
 
 	@PatchMapping("/confirm")
-	public ResponseEntity<EnvelopeResponse<Long>> confirmEnrollment(
+	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> confirmEnrollment(
 		@RequestBody PatchConfirmRequestDto patchConfirmRequestDto, @RequestParam Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(2L);
 
 		return ResponseEntity.ok()
-			.body(EnvelopeResponse.<Long>builder()
+			.body(EnvelopeResponse.<CommonIdResponseDto>builder()
 				.code(HttpStatus.OK.value())
 				.data(groupService.confirmEnrollment(member.getMemberId(), patchConfirmRequestDto, groupId))
 				.build());
 	}
 
 	@PostMapping("/fund")
-	public ResponseEntity<EnvelopeResponse<Long>> saveFundManagement(
+	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> saveFundManagement(
 		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto, @RequestParam() Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(EnvelopeResponse.<Long>builder()
+			.body(EnvelopeResponse.<CommonIdResponseDto>builder()
 				.code(HttpStatus.CREATED.value())
 				.data(groupService.saveFundManagement(member.getMemberId(), commonFundManagementRequestDto, groupId))
 				.build());
 	}
 
 	@PatchMapping("/fund")
-	public ResponseEntity<EnvelopeResponse<CommonFundManagementResponseDto>> updateFundManagement(
+	public ResponseEntity<EnvelopeResponse<PatchFundManagementResponseDto>> updateFundManagement(
 		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto, @RequestParam() Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
 
 		return ResponseEntity.ok()
-			.body(EnvelopeResponse.<CommonFundManagementResponseDto>builder()
+			.body(EnvelopeResponse.<PatchFundManagementResponseDto>builder()
 				.code(HttpStatus.OK.value())
 				.data(groupService.updateFundManagement(member.getMemberId(), commonFundManagementRequestDto, groupId))
 				.build());

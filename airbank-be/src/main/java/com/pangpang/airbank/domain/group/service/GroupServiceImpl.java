@@ -10,9 +10,10 @@ import com.pangpang.airbank.domain.fund.domain.FundManagement;
 import com.pangpang.airbank.domain.fund.repository.FundManagementRepository;
 import com.pangpang.airbank.domain.group.domain.MemberRelationship;
 import com.pangpang.airbank.domain.group.dto.CommonFundManagementRequestDto;
-import com.pangpang.airbank.domain.group.dto.CommonFundManagementResponseDto;
+import com.pangpang.airbank.domain.group.dto.CommonIdResponseDto;
 import com.pangpang.airbank.domain.group.dto.GetPartnersResponseDto;
 import com.pangpang.airbank.domain.group.dto.PatchConfirmRequestDto;
+import com.pangpang.airbank.domain.group.dto.PatchFundManagementResponseDto;
 import com.pangpang.airbank.domain.group.dto.PostEnrollChildRequestDto;
 import com.pangpang.airbank.domain.group.repository.MemberRelationshipRepository;
 import com.pangpang.airbank.domain.member.domain.Member;
@@ -57,7 +58,7 @@ public class GroupServiceImpl implements GroupService {
 
 	@Transactional
 	@Override
-	public Long enrollChild(Long memberId, PostEnrollChildRequestDto postEnrollChildRequestDto) {
+	public CommonIdResponseDto enrollChild(Long memberId, PostEnrollChildRequestDto postEnrollChildRequestDto) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
 
@@ -76,12 +77,13 @@ public class GroupServiceImpl implements GroupService {
 		});
 
 		MemberRelationship memberRelationship = MemberRelationship.of(member, childMember);
-		return memberRelationshipRepository.save(memberRelationship).getId();
+		return new CommonIdResponseDto(memberRelationshipRepository.save(memberRelationship).getId());
 	}
 
 	@Transactional
 	@Override
-	public Long confirmEnrollment(Long memberId, PatchConfirmRequestDto patchConfirmRequestDto, Long groupId) {
+	public CommonIdResponseDto confirmEnrollment(Long memberId, PatchConfirmRequestDto patchConfirmRequestDto,
+		Long groupId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
 
@@ -94,16 +96,16 @@ public class GroupServiceImpl implements GroupService {
 
 		if (patchConfirmRequestDto.getIsAccept()) {
 			memberRelationship.setActivated(true);
-			return memberRelationship.getId();
+			return new CommonIdResponseDto(memberRelationship.getId());
 		}
 
 		memberRelationship.setActivated(false);
-		return memberRelationship.getId();
+		return new CommonIdResponseDto(memberRelationship.getId());
 	}
 
 	@Transactional
 	@Override
-	public Long saveFundManagement(Long memberId,
+	public CommonIdResponseDto saveFundManagement(Long memberId,
 		CommonFundManagementRequestDto commonFundManagementRequestDto, Long groupId) {
 
 		Member member = memberRepository.findById(memberId)
@@ -122,12 +124,12 @@ public class GroupServiceImpl implements GroupService {
 		}
 
 		FundManagement fundManagement = FundManagement.of(memberRelationship, commonFundManagementRequestDto);
-		return fundManagementRepository.save(fundManagement).getId();
+		return new CommonIdResponseDto(fundManagementRepository.save(fundManagement).getId());
 	}
 
 	@Transactional
 	@Override
-	public CommonFundManagementResponseDto updateFundManagement(Long memberId,
+	public PatchFundManagementResponseDto updateFundManagement(Long memberId,
 		CommonFundManagementRequestDto commonFundManagementRequestDto, Long groupId) {
 
 		Member member = memberRepository.findById(memberId)
@@ -145,7 +147,7 @@ public class GroupServiceImpl implements GroupService {
 			.orElseThrow(() -> new FundException(FundErrorInfo.NOT_FOUND_FUND_MANAGEMENT_BY_MEMBER_RELATIONSHIP_ID));
 
 		fundManagement.updateFundManagement(commonFundManagementRequestDto);
-		return CommonFundManagementResponseDto.from(commonFundManagementRequestDto);
+		return PatchFundManagementResponseDto.from(commonFundManagementRequestDto);
 	}
 
 }
