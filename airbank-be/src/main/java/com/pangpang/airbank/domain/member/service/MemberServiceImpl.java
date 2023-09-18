@@ -1,8 +1,11 @@
 package com.pangpang.airbank.domain.member.service;
 
-import org.springframework.stereotype.Service;
+import java.util.Optional;
 
-import com.pangpang.airbank.domain.auth.dto.GetLoginResponseDto;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.pangpang.airbank.domain.member.domain.Member;
 import com.pangpang.airbank.domain.member.dto.GetMemberResponseDto;
 import com.pangpang.airbank.domain.member.dto.PostLoginRequestDto;
@@ -17,9 +20,13 @@ import lombok.RequiredArgsConstructor;
 public class MemberServiceImpl implements MemberService {
 	private final MemberRepository memberRepository;
 
-	/*
-	 사용자 조회
+	/**
+	 *  사용자 조회
+	 * 
+	 * @param Long memberId
+	 * @return 사용자 정보
 	 */
+	@Transactional(readOnly = true)
 	@Override
 	public GetMemberResponseDto getMember(Long memberId) {
 		Member member = memberRepository.findById(memberId)
@@ -28,25 +35,36 @@ public class MemberServiceImpl implements MemberService {
 		return GetMemberResponseDto.from(member);
 	}
 	
-	/*
-	카카오 식별자로 사용자 조회
+	/**
+	 *  카카오 식별자로 사용자 조회
+	 * 
+	 * @param PostLoginRequestDto postLoginRequestDto
+	 * @return 사용자 정보
 	 */
+	@Transactional(readOnly = true)
 	@Override
-	public GetLoginResponseDto getMemberByOauthIdentifier(PostLoginRequestDto postLoginRequestDto) {
-		Member member = memberRepository.findByOauthIdentifier(postLoginRequestDto.getId())
-			.orElse(saveMember(postLoginRequestDto));
+	public Member getMemberByOauthIdentifier(PostLoginRequestDto postLoginRequestDto) {
+		Optional<Member> optionalMember = memberRepository.findByOauthIdentifier(postLoginRequestDto.getId());
 
-
-		return null;
+		if (optionalMember.isPresent()) {
+			return optionalMember.get();
+		} else {
+			return saveMember(postLoginRequestDto);
+		}
 	}
 
-	/*
-	회원가입
-	*/
+	/**
+	 *  회원가입
+	 *
+	 * @param PostLoginRequestDto postLoginRequestDto
+	 * @return 가입한 사용자
+	 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public GetLoginResponseDto saveMember(PostLoginRequestDto postLoginRequestDto) {
-
-		return null;
+	public Member saveMember(PostLoginRequestDto postLoginRequestDto) {
+		Member member = Member.of(postLoginRequestDto.getId(), postLoginRequestDto.getKakao_account().getProfile().getProfile_image_url(), postLoginRequestDto.getKakao_account().getProfile().getIs_default_image());
+		memberRepository.save(member);
+		return member;
 	}
 
 }

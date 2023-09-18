@@ -63,7 +63,22 @@ public class Member extends BaseTimeEntity {
 	private Boolean deleted = Boolean.FALSE;
 
 	@NotNull
+	@Builder.Default
+	@ColumnDefault("'UNKNOWN'")
 	@Column(length = 20)
 	@Convert(converter = MemberRoleConverter.class)
-	private MemberRole role;
+	private MemberRole role = MemberRole.UNKNOWN;
+
+	public static Member of(String oauthIdentifier, String imageUrl, Boolean isDefaultImage) {
+		return Member.builder()
+			.oauthIdentifier(oauthIdentifier)
+			.imageUrl(getImageUrl(imageUrl, isDefaultImage))
+			.build();
+	}
+
+	private static String getImageUrl(String imageUrl, Boolean isDefaultImage) {
+		if (isDefaultImage)
+			return null;
+		return imageUrl;
+	}
 }

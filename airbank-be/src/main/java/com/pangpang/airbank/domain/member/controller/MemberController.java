@@ -22,9 +22,15 @@ public class MemberController {
 
 	private final MemberService memberService;
 
+	/**
+	 *  사용자 정보 조회
+	 * 
+	 * @param AuthenticatedMemberArgument authenticatedMemberArgument
+	 * @return 사용자 정보
+	 * @see AuthenticationArgumentResolver
+	 */
 	@GetMapping()
-	public ResponseEntity<EnvelopeResponse<GetMemberResponseDto>> getMember(HttpServletRequest request,
-		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument) {
+	public ResponseEntity<EnvelopeResponse<GetMemberResponseDto>> getMember(@Authentication AuthenticatedMemberArgument authenticatedMemberArgument) {
 
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<GetMemberResponseDto>builder()

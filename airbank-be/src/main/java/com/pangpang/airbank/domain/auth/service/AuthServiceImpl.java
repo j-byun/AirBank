@@ -6,6 +6,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.pangpang.airbank.domain.auth.dto.GetKakaoAccessTokenResponseDto;
 import com.pangpang.airbank.domain.member.dto.PostLoginRequestDto;
 import com.pangpang.airbank.global.error.exception.AuthException;
 import com.pangpang.airbank.global.error.info.AuthErrorInfo;
@@ -30,8 +31,11 @@ public class AuthServiceImpl implements AuthService {
 	private final String KAKAO_AUTH_URI = "https://kauth.kakao.com/oauth/token";
 	private final String KAKAO_API_URI = "https://kapi.kakao.com/v2/user/me";
 
-	/*
-	카카오 로그인 창 출력
+	/**
+	 *  카카오 로그인 창 출력
+	 *
+	 * @param HttpServletResponse response
+	 * @return 카카오 로그인 창으로 redirect
 	 */
 	@Override
 	public void sendRedirectUrl(HttpServletResponse response) {
@@ -43,8 +47,10 @@ public class AuthServiceImpl implements AuthService {
 		}
 	}
 
-	/*
-	카카오 로그인 창 주소 만들기
+	/**
+	 *  카카오 로그인 창 주소 생성
+	 * 
+	 * @return 카카오 로그인 창 URL
 	 */
 	private String getKakaoUrl() {
 		return new StringBuilder().append(KAKAO_URL).append("?")
@@ -53,11 +59,14 @@ public class AuthServiceImpl implements AuthService {
 			.append("response_type=").append("code").toString();
 	}
 
-	/*
-	인가코드로 토큰 발급
+	/**
+	 *  인가코드로 토큰 발급
+	 *
+	 * @param String code
+	 * @return 카카오 AccessToken
 	 */
 	@Override
-	public String getKakaoAccessToken(String code) {
+	public GetKakaoAccessTokenResponseDto getKakaoAccessToken(String code) {
 		if (code == null)
 			throw new AuthException((AuthErrorInfo.INVALID_AUTH_CODE));
 
@@ -69,15 +78,18 @@ public class AuthServiceImpl implements AuthService {
 				.header("Content-type","application/x-www-form-urlencoded;charset=utf-8" )
 				.bodyValue(params)
 				.retrieve()
-				.bodyToMono(String.class)
+				.bodyToMono(GetKakaoAccessTokenResponseDto.class)
 				.block();
 		} catch (Exception e) {
 			throw new AuthException(AuthErrorInfo.AUTH_SERVER_ERROR);
 		}
 	}
 
-	/*
-	토큰 발급에 필요한 파라미터 세팅
+	/**
+	 *  토큰 발급에 필요한 파라미터 세팅
+	 *
+	 * @param String code
+	 * @return map 형식으로 세팅된 파라미터
 	 */
 	private MultiValueMap<String, String> setParameters(String code) {
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -91,8 +103,11 @@ public class AuthServiceImpl implements AuthService {
 		return params;
 	}
 	
-	/*
-	토큰으로 사용자 정보 조회
+	/**
+	 *  토큰으로 사용자 정보 조회
+	 *
+	 * @param String accessToken
+	 * @return 카카오에서 조회된 사용자 정보
 	 */
 	@Override
 	public PostLoginRequestDto getKakaoProfile(String accessToken) {
