@@ -13,7 +13,8 @@ public interface GroupService {
 
 	Long confirmEnrollment(Long memberId, PatchConfirmRequestDto patchConfirmRequestDto, Long groupId);
 
-	// CommonFundManagementResponseDto saveFundManagement(Long memberId,)
+	Long saveFundManagement(Long memberId,
+		CommonFundManagementRequestDto commonFundManagementRequestDto, Long groupId);
 
 	CommonFundManagementResponseDto updateFundManagement(Long memberId,
 		CommonFundManagementRequestDto commonFundManagementRequestDto, Long groupId);

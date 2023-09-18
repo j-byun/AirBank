@@ -26,9 +26,11 @@ import com.pangpang.airbank.global.error.info.MemberErrorInfo;
 import com.pangpang.airbank.global.meta.domain.MemberRole;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GroupServiceImpl implements GroupService {
 	private final MemberRelationshipRepository memberRelationshipRepository;
 	private final MemberRepository memberRepository;
@@ -101,6 +103,30 @@ public class GroupServiceImpl implements GroupService {
 
 	@Transactional
 	@Override
+	public Long saveFundManagement(Long memberId,
+		CommonFundManagementRequestDto commonFundManagementRequestDto, Long groupId) {
+
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
+
+		if (!member.getRole().getName().equals(MemberRole.PARENT.getName())) {
+			throw new FundException(FundErrorInfo.UPDATE_FUND_MANAGEMENT_PERMISSION_DENIED);
+		}
+
+		MemberRelationship memberRelationship = memberRelationshipRepository.findByIdAndParentId(groupId,
+				member.getId())
+			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_MEMBER_RELATIONSHIP_BY_PARENT_ID));
+
+		if (fundManagementRepository.existsByMemberRelationshipId(memberRelationship.getId())) {
+			throw new FundException(FundErrorInfo.ALREADY_EXISTS_FUND_MANAGEMENT);
+		}
+
+		FundManagement fundManagement = FundManagement.of(memberRelationship, commonFundManagementRequestDto);
+		return fundManagementRepository.save(fundManagement).getId();
+	}
+
+	@Transactional
+	@Override
 	public CommonFundManagementResponseDto updateFundManagement(Long memberId,
 		CommonFundManagementRequestDto commonFundManagementRequestDto, Long groupId) {
 
@@ -116,10 +142,10 @@ public class GroupServiceImpl implements GroupService {
 			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_MEMBER_RELATIONSHIP_BY_PARENT_ID));
 
 		FundManagement fundManagement = fundManagementRepository.findByMemberRelationshipId(memberRelationship.getId())
-			.orElseThrow(() -> new FundException(FundErrorInfo.NOT_FOUND_FUND_MANAGEMENT_BY_ID));
+			.orElseThrow(() -> new FundException(FundErrorInfo.NOT_FOUND_FUND_MANAGEMENT_BY_MEMBER_RELATIONSHIP_ID));
 
 		fundManagement.updateFundManagement(commonFundManagementRequestDto);
-		return CommonFundManagementResponseDto.of(commonFundManagementRequestDto);
+		return CommonFundManagementResponseDto.from(commonFundManagementRequestDto);
 	}
 
 }

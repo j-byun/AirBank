@@ -12,7 +12,7 @@ public class CommonFundManagementResponseDto {
 	private Integer confiscationRate;
 	private Long loanLimit;
 
-	public static CommonFundManagementResponseDto of(CommonFundManagementRequestDto commonFundManagementRequestDto) {
+	public static CommonFundManagementResponseDto from(CommonFundManagementRequestDto commonFundManagementRequestDto) {
 		return CommonFundManagementResponseDto.builder()
 			.taxRate(commonFundManagementRequestDto.getTaxRate())
 			.allowanceAmount(commonFundManagementRequestDto.getAllowanceAmount())

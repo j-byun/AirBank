@@ -65,14 +65,14 @@ public class GroupController {
 	}
 
 	@PostMapping("/fund")
-	public ResponseEntity<EnvelopeResponse<CommonFundManagementResponseDto>> saveFundManagement(
+	public ResponseEntity<EnvelopeResponse<Long>> saveFundManagement(
 		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto, @RequestParam() Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
 
-		return ResponseEntity.ok()
-			.body(EnvelopeResponse.<CommonFundManagementResponseDto>builder()
-				.code(HttpStatus.OK.value())
-				.data(null)
+		return ResponseEntity.status(HttpStatus.CREATED)
+			.body(EnvelopeResponse.<Long>builder()
+				.code(HttpStatus.CREATED.value())
+				.data(groupService.saveFundManagement(member.getMemberId(), commonFundManagementRequestDto, groupId))
 				.build());
 	}
 

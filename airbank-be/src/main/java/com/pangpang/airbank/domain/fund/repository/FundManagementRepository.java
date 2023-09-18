@@ -8,4 +8,6 @@ import com.pangpang.airbank.domain.fund.domain.FundManagement;
 
 public interface FundManagementRepository extends JpaRepository<FundManagement, Long> {
 	Optional<FundManagement> findByMemberRelationshipId(Long memberRelationshipId);
+
+	Boolean existsByMemberRelationshipId(Long groupId);
 }

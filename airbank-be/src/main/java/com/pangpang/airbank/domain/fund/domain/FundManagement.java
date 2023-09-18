@@ -74,4 +74,16 @@ public class FundManagement {
 		this.confiscationRate = commonFundManagementRequestDto.getConfiscationRate();
 		this.loanLimit = commonFundManagementRequestDto.getLoanLimit();
 	}
+
+	public static FundManagement of(MemberRelationship memberRelationship,
+		CommonFundManagementRequestDto commonFundManagementRequestDto) {
+		return FundManagement.builder()
+			.taxRate(commonFundManagementRequestDto.getTaxRate())
+			.allowanceAmount(commonFundManagementRequestDto.getAllowanceAmount())
+			.allowanceDate(commonFundManagementRequestDto.getAllowanceDate())
+			.confiscationRate(commonFundManagementRequestDto.getConfiscationRate())
+			.loanLimit(commonFundManagementRequestDto.getLoanLimit())
+			.memberRelationship(memberRelationship)
+			.build();
+	}
 }
