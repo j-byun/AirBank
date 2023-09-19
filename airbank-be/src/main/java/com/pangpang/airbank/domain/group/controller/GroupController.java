@@ -20,6 +20,12 @@ import com.pangpang.airbank.domain.group.service.GroupService;
 import com.pangpang.airbank.global.common.response.EnvelopeResponse;
 import com.pangpang.airbank.global.resolver.dto.AuthenticatedMemberArgument;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,9 +33,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/groups")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "groups", description = "자녀와 부모의 관계를 관리하는 API")
 public class GroupController {
 	private final GroupService groupService;
 
+	@Operation(summary = "사용자 관계 조회", description = "나와 관계가 있는 사용자의 정보를 조회합니다. 자식일때는 부모의 정보가, 부모일때는 자식들의 정보가 조회됩니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "사용자 관계 조회 성공", content = @Content(schema = @Schema(implementation = GetPartnersResponseDto.class))),
+		@ApiResponse(responseCode = "1500", description = "사용자를 찾을 수 없습니다.", content = @Content)
+	})
 	@GetMapping()
 	public ResponseEntity<EnvelopeResponse<GetPartnersResponseDto>> getPartners() {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
@@ -41,6 +53,9 @@ public class GroupController {
 				.build());
 	}
 
+	@Operation(summary = "자녀 등록", description = "부모가 휴대폰 번호로 자녀를 검색해서 등록합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "자녀 등록 요청 성공", content = @Content(schema = @Schema(implementation = CommonIdResponseDto.class)))})
 	@PostMapping()
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> enrollChild(
 		@RequestBody PostEnrollChildRequestDto postEnrollChildRequestDto) {
@@ -53,6 +68,9 @@ public class GroupController {
 				.build());
 	}
 
+	@Operation(summary = "자녀 등록 수락/거절", description = "부모가 보낸 그룹 요청을 수락하거나 거절합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "자녀 등록 수락/거절 성공", content = @Content(schema = @Schema(implementation = CommonIdResponseDto.class)))})
 	@PatchMapping("/confirm")
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> confirmEnrollment(
 		@RequestBody PatchConfirmRequestDto patchConfirmRequestDto, @RequestParam Long groupId) {
@@ -65,6 +83,9 @@ public class GroupController {
 				.build());
 	}
 
+	@Operation(summary = "자금 관리 생성", description = "부모가 자녀를 등록하면 해당 그룹에 대한 자금 관리 데이터를 저장합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "자금 관리 생성", content = @Content(schema = @Schema(implementation = CommonIdResponseDto.class)))})
 	@PostMapping("/fund")
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> saveFundManagement(
 		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto, @RequestParam() Long groupId) {
@@ -77,6 +98,9 @@ public class GroupController {
 				.build());
 	}
 
+	@Operation(summary = "자금 관리 수정", description = "부모가 자금 관리를 수정합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "자금 관리 생성", content = @Content(schema = @Schema(implementation = PatchFundManagementResponseDto.class)))})
 	@PatchMapping("/fund")
 	public ResponseEntity<EnvelopeResponse<PatchFundManagementResponseDto>> updateFundManagement(
 		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto, @RequestParam() Long groupId) {
