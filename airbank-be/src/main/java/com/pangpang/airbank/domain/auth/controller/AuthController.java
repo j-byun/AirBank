@@ -78,12 +78,14 @@ public class AuthController {
 	public ResponseEntity<EnvelopeResponse<GetLogoutResponseDto>> logout(HttpServletRequest request,
 		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument) {
 
+		// 카카오 로그아웃 기능 추가하기
 		request.getSession().invalidate();
 
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<GetLogoutResponseDto>builder()
 				.code(HttpStatus.OK.value())
-				.data(null)
+				.data(new GetLogoutResponseDto(
+					memberService.getMember(authenticatedMemberArgument.getMemberId()).getName()))
 				.build());
 	}
 

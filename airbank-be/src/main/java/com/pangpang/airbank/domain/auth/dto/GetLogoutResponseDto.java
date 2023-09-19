@@ -6,11 +6,9 @@ import lombok.Getter;
 @Getter
 @Builder
 public class GetLogoutResponseDto {
-	private Long id;
+	private String name;
 
-	public static GetLogoutResponseDto from(Long id) {
-		return GetLogoutResponseDto.builder()
-			.id(id)
-			.build();
+	public GetLogoutResponseDto(String name) {
+		this.name = name;
 	}
 }

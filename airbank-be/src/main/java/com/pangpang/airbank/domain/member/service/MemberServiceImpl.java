@@ -62,9 +62,7 @@ public class MemberServiceImpl implements MemberService {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Member saveMember(PostLoginRequestDto postLoginRequestDto) {
-		Member member = Member.of(postLoginRequestDto.getId(),
-			postLoginRequestDto.getKakao_account().getProfile().getProfile_image_url(),
-			postLoginRequestDto.getKakao_account().getProfile().getIs_default_image());
+		Member member = Member.of(postLoginRequestDto);
 		memberRepository.save(member);
 		return member;
 	}
