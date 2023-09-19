@@ -1,6 +1,5 @@
 package com.pangpang.airbank.domain.auth.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -18,18 +17,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-	@Value("${auth.kakao.client.id}")
-	private String KAKAO_CLIENT_ID;
-
-	@Value("${auth.kakao.client.secret}")
-	private String KAKAO_CLIENT_SECRET;
-
-	@Value("${auth.kakao.redirect.uri}")
-	private String KAKAO_REDIRECT_URI;
-
-	private final String KAKAO_URL = "https://kauth.kakao.com/oauth/authorize";
-	private final String KAKAO_AUTH_URI = "https://kauth.kakao.com/oauth/token";
-	private final String KAKAO_API_URI = "https://kapi.kakao.com/v2/user/me";
+	private final AuthConstantProvider authConstantProvider;
+	private static final String KAKAO_URL = "https://kauth.kakao.com/oauth/authorize";
+	private static final String KAKAO_AUTH_URI = "https://kauth.kakao.com/oauth/token";
+	private static final String KAKAO_API_URI = "https://kapi.kakao.com/v2/user/me";
 
 	/**
 	 *  카카오 로그인 창 출력
@@ -39,9 +30,8 @@ public class AuthServiceImpl implements AuthService {
 	 */
 	@Override
 	public void sendRedirectUrl(HttpServletResponse response) {
-		String redirectUrl = getKakaoUrl();
 		try {
-			response.sendRedirect(redirectUrl);
+			response.sendRedirect(getKakaoUrl());
 		} catch (Exception e) {
 			throw new AuthException(AuthErrorInfo.AUTH_SERVER_ERROR);
 		}
@@ -54,8 +44,8 @@ public class AuthServiceImpl implements AuthService {
 	 */
 	private String getKakaoUrl() {
 		return new StringBuilder().append(KAKAO_URL).append("?")
-			.append("client_id=").append(KAKAO_CLIENT_ID).append("&")
-			.append("redirect_uri=").append(KAKAO_REDIRECT_URI).append("&")
+			.append("client_id=").append(authConstantProvider.getClientId()).append("&")
+			.append("redirect_uri=").append(authConstantProvider.getRedirectUri()).append("&")
 			.append("response_type=").append("code").toString();
 	}
 
@@ -96,9 +86,9 @@ public class AuthServiceImpl implements AuthService {
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
 		params.add("grant_type", "authorization_code");
-		params.add("client_id", KAKAO_CLIENT_ID);
-		params.add("client_secret", KAKAO_CLIENT_SECRET);
-		params.add("redirect_uri", KAKAO_REDIRECT_URI);
+		params.add("client_id", authConstantProvider.getClientId());
+		params.add("client_secret", authConstantProvider.getClientSecret());
+		params.add("redirect_uri", authConstantProvider.getRedirectUri());
 		params.add("code", code);
 
 		return params;

@@ -57,7 +57,7 @@ public class AuthController {
 		@RequestParam("code") GetLoginRequestDto getLoginRequestDto) {
 		HttpSession session = request.getSession();
 
-		String accessToken = authService.getKakaoAccessToken(getLoginRequestDto.getCode()).getAccess_token();
+		String accessToken = authService.getKakaoAccessToken(getLoginRequestDto.getCode()).getAccessToken();
 		PostLoginRequestDto postLoginRequestDto = authService.getKakaoProfile(accessToken);
 		Member member = memberService.getMemberByOauthIdentifier(postLoginRequestDto);
 		session.setAttribute("memberId", member.getId());

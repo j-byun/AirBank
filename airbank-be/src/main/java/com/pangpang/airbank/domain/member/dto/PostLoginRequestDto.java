@@ -1,11 +1,14 @@
 package com.pangpang.airbank.domain.member.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 
 @Getter
 public class PostLoginRequestDto {
 	private String id;
-	private KakaoAccount kakao_account;
+	@JsonProperty("kakao_account")
+	private KakaoAccount kakaoAccount;
 
 	@Getter
 	public class KakaoAccount {
@@ -13,8 +16,10 @@ public class PostLoginRequestDto {
 
 		@Getter
 		public class Profile {
-			private String profile_image_url;
-			private Boolean is_default_image;
+			@JsonProperty("profile_image_url")
+			private String profileImageUrl;
+			@JsonProperty("is_default_image")
+			private Boolean isDefaultImage;
 		}
 	}
 }

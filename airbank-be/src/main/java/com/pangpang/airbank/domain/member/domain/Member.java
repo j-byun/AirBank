@@ -73,13 +73,13 @@ public class Member extends BaseTimeEntity {
 	public static Member of(PostLoginRequestDto postLoginRequestDto) {
 		return Member.builder()
 			.oauthIdentifier(postLoginRequestDto.getId())
-			.imageUrl(getImageUrl(postLoginRequestDto.getKakao_account().getProfile().getProfile_image_url(),
-				postLoginRequestDto.getKakao_account().getProfile().getIs_default_image()))
+			.imageUrl(getImageUrl(postLoginRequestDto.getKakaoAccount().getProfile().getProfileImageUrl(),
+				postLoginRequestDto.getKakaoAccount().getProfile().getIsDefaultImage()))
 			.build();
 	}
 
-	private static String getImageUrl(String imageUrl, Boolean isDefaultImage) {
-		if (isDefaultImage) {
+	private static String getImageUrl(String imageUrl, Boolean profileImageUrl) {
+		if (profileImageUrl) {
 			return null;
 		}
 		return imageUrl;
