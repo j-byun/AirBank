@@ -55,7 +55,13 @@ public class GroupController {
 
 	@Operation(summary = "자녀 등록", description = "부모가 휴대폰 번호로 자녀를 검색해서 등록합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "자녀 등록 요청 성공", content = @Content(schema = @Schema(implementation = CommonIdResponseDto.class)))})
+		@ApiResponse(responseCode = "200", description = "자녀 등록 요청 성공", content = @Content(schema = @Schema(implementation = CommonIdResponseDto.class))),
+		@ApiResponse(responseCode = "1500", description = "사용자를 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1302", description = "자녀를 등록할 권한이 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1501", description = "등록된 휴대폰 번호가 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1300", description = "이미 부모가 존재하는 자녀입니다.", content = @Content),
+		@ApiResponse(responseCode = "1301", description = "이미 자녀 등록이 진행 중 입니다.", content = @Content)
+	})
 	@PostMapping()
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> enrollChild(
 		@RequestBody PostEnrollChildRequestDto postEnrollChildRequestDto) {
@@ -70,7 +76,11 @@ public class GroupController {
 
 	@Operation(summary = "자녀 등록 수락/거절", description = "부모가 보낸 그룹 요청을 수락하거나 거절합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "자녀 등록 수락/거절 성공", content = @Content(schema = @Schema(implementation = CommonIdResponseDto.class)))})
+		@ApiResponse(responseCode = "200", description = "자녀 등록 수락/거절 성공", content = @Content(schema = @Schema(implementation = CommonIdResponseDto.class))),
+		@ApiResponse(responseCode = "1500", description = "사용자를 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1304", description = "자녀만 접근할 수 있습니다.", content = @Content),
+		@ApiResponse(responseCode = "1303", description = "등록중인 그룹이 없습니다.", content = @Content)
+	})
 	@PatchMapping("/confirm")
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> confirmEnrollment(
 		@RequestBody PatchConfirmRequestDto patchConfirmRequestDto, @RequestParam Long groupId) {
@@ -85,7 +95,12 @@ public class GroupController {
 
 	@Operation(summary = "자금 관리 생성", description = "부모가 자녀를 등록하면 해당 그룹에 대한 자금 관리 데이터를 저장합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "자금 관리 생성", content = @Content(schema = @Schema(implementation = CommonIdResponseDto.class)))})
+		@ApiResponse(responseCode = "200", description = "자금 관리 생성", content = @Content(schema = @Schema(implementation = CommonIdResponseDto.class))),
+		@ApiResponse(responseCode = "1500", description = "사용자를 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1201", description = "자금 관리를 수정할 권한이 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1305", description = "그룹을 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1203", description = "자금 관리가 이미 존재합니다.", content = @Content),
+	})
 	@PostMapping("/fund")
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> saveFundManagement(
 		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto, @RequestParam() Long groupId) {
@@ -100,7 +115,12 @@ public class GroupController {
 
 	@Operation(summary = "자금 관리 수정", description = "부모가 자금 관리를 수정합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "자금 관리 생성", content = @Content(schema = @Schema(implementation = PatchFundManagementResponseDto.class)))})
+		@ApiResponse(responseCode = "200", description = "자금 관리 생성", content = @Content(schema = @Schema(implementation = PatchFundManagementResponseDto.class))),
+		@ApiResponse(responseCode = "1500", description = "사용자를 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1201", description = "자금 관리를 수정할 권한이 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1305", description = "그룹을 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1200", description = "자금 관리를 찾을 수 없습니다.", content = @Content),
+	})
 	@PatchMapping("/fund")
 	public ResponseEntity<EnvelopeResponse<PatchFundManagementResponseDto>> updateFundManagement(
 		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto, @RequestParam() Long groupId) {
