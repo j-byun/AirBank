@@ -78,10 +78,10 @@ public class Member extends BaseTimeEntity {
 			.build();
 	}
 
-	private static String getImageUrl(String imageUrl, Boolean profileImageUrl) {
-		if (profileImageUrl) {
+	private static String getImageUrl(String profileImageUrl, Boolean isDefaultImage) {
+		if (isDefaultImage) {
 			return null;
 		}
-		return imageUrl;
+		return profileImageUrl;
 	}
 }
