@@ -15,10 +15,16 @@ public class GetLoginResponseDto {
 	}
 
 	private String getName(String name) {
-		return (name == null) ? "" : name;
+		if (name == null) {
+			return "";
+		}
+		return name;
 	}
 
 	private String getPhoneNumber(String phoneNumber) {
-		return (phoneNumber == null) ? "" : phoneNumber;
+		if (phoneNumber == null) {
+			return "";
+		}
+		return phoneNumber;
 	}
 }
