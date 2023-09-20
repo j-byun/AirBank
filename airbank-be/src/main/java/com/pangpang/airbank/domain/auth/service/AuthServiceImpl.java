@@ -128,7 +128,7 @@ public class AuthServiceImpl implements AuthService {
 		try {
 			return WebClient.create()
 				.post()
-				.uri(KAKAO_API_URI)
+				.uri(KAKAO_LOGOUT_URL)
 				.header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
 				.header("Authorization", "KakaoAK " + authConstantProvider.getServiceAppAdminKey())
 				.bodyValue(params)
