@@ -1,5 +1,6 @@
 package com.pangpang.airbank.domain.member.dto;
 
+import com.pangpang.airbank.domain.auth.dto.GetLoginResponseDto;
 import com.pangpang.airbank.domain.member.domain.Member;
 
 import lombok.Builder;
@@ -7,20 +8,14 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class GetMemberResponseDto {
-	private String name;
-	private String phoneNumber;
-	private Integer creditScore;
-	private String imageUrl;
-	private String role;
+public class GetLoginMemberResponseDto {
+	private Long id;
+	private GetLoginResponseDto getLoginResponseDto;
 
-	public static GetMemberResponseDto from(Member member) {
-		return GetMemberResponseDto.builder()
-			.name(member.getName())
-			.phoneNumber(member.getPhoneNumber())
-			.creditScore(member.getCreditScore())
-			.imageUrl(member.getImageUrl())
-			.role(member.getRole().getName())
+	public static GetLoginMemberResponseDto from(Long id, GetLoginResponseDto getLoginResponseDto) {
+		return GetLoginMemberResponseDto.builder()
+			.id(id)
+			.getLoginResponseDto(getLoginResponseDto)
 			.build();
 	}
 }
