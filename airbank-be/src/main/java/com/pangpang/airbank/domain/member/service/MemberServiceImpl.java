@@ -86,6 +86,12 @@ public class MemberServiceImpl implements MemberService {
 		return member.getOauthIdentifier();
 	}
 
+	/**
+	 *  사용자 id 조회
+	 *
+	 * @param Long memberId
+	 * @return 사용자 id
+	 */
 	@Transactional(readOnly = true)
 	@Override
 	public GetLogoutResponseDto getMemberName(Long memberId) {
