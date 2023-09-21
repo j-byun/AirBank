@@ -4,5 +4,6 @@ import com.pangpang.airbank.domain.account.dto.CommonAccountIdResponseDto;
 import com.pangpang.airbank.domain.account.dto.PostEnrollAccountRequestDto;
 
 public interface AccountService {
-	CommonAccountIdResponseDto saveAccount(PostEnrollAccountRequestDto postEnrollAccountRequestDto, Long memberId);
+	CommonAccountIdResponseDto saveAccount(PostEnrollAccountRequestDto postEnrollAccountRequestDto,
+		Long memberId);
 }

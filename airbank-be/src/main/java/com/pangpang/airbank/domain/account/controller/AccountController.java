@@ -32,7 +32,7 @@ public class AccountController {
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(EnvelopeResponse.<CommonAccountIdResponseDto>builder()
 				.code(HttpStatus.CREATED.value())
-				// .data()
+				.data(accountService.saveAccount(postEnrollAccountRequestDto, member.getMemberId()))
 				.build());
 	}
 }
