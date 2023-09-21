@@ -51,9 +51,8 @@ public class MemberServiceImpl implements MemberService {
 
 		if (optionalMember.isPresent()) {
 			return GetLoginMemberResponseDto.from(optionalMember.get());
-		} else {
-			return saveMember(postLoginRequestDto);
 		}
+		return saveMember(postLoginRequestDto);
 	}
 
 	/**

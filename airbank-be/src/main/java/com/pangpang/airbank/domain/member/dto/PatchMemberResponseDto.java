@@ -1,6 +1,7 @@
 package com.pangpang.airbank.domain.member.dto;
 
 import com.pangpang.airbank.domain.member.domain.Member;
+import com.pangpang.airbank.global.meta.domain.MemberRole;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,13 +11,13 @@ import lombok.Getter;
 public class PatchMemberResponseDto {
 	private String name;
 	private String phoneNumber;
-	private String role;
+	private MemberRole role;
 
 	public static PatchMemberResponseDto from(Member member) {
 		return PatchMemberResponseDto.builder()
 			.name(member.getName())
 			.phoneNumber(member.getPhoneNumber())
-			.role(member.getRole().getName())
+			.role(member.getRole())
 			.build();
 	}
 }

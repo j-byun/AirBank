@@ -25,7 +25,6 @@ public enum MemberRole {
 
 	@JsonCreator
 	public static MemberRole ofName(String name) {
-		System.out.println(name);
 		return Arrays.stream(MemberRole.values())
 			.filter(value -> value.getName().equals(name))
 			.findAny()
