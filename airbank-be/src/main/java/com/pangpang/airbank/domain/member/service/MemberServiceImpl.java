@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pangpang.airbank.domain.auth.dto.GetLoginResponseDto;
 import com.pangpang.airbank.domain.auth.dto.GetLogoutResponseDto;
 import com.pangpang.airbank.domain.member.domain.Member;
 import com.pangpang.airbank.domain.member.dto.GetLoginMemberResponseDto;
@@ -101,7 +100,7 @@ public class MemberServiceImpl implements MemberService {
 	 *        PatchMemberRequestDto patchMemberRequestDto
 	 * @return 수정 후의 정보
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	@Override
 	public PatchMemberResponseDto updateMember(Long memberId, PatchMemberRequestDto patchMemberRequestDto) {
 		Member member = getMemberByIdOrElseThrowException(memberId);
