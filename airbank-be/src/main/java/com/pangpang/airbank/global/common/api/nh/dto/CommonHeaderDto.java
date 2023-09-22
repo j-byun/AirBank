@@ -1,7 +1,11 @@
 package com.pangpang.airbank.global.common.api.nh.dto;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.pangpang.airbank.global.common.api.nh.NHApiConstantProvider;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +29,19 @@ public class CommonHeaderDto {
 	private String rpcd;
 	private String rsms;
 	private String rgno;
+
+	public static CommonHeaderDto of(NHApiConstantProvider nhApiConstantProvider, Long isTuno) {
+		SimpleDateFormat dayFormatter = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat timeFormatter = new SimpleDateFormat("HHmmss");
+		Date now = new Date();
+
+		return CommonHeaderDto.builder()
+			.tsymd(dayFormatter.format(now))
+			.trtm(timeFormatter.format(now))
+			.iscd(nhApiConstantProvider.getIscd())
+			.fintechApsno("001")
+			.isTuno(isTuno.toString())
+			.accessToken(nhApiConstantProvider.getAccessToken())
+			.build();
+	}
 }
