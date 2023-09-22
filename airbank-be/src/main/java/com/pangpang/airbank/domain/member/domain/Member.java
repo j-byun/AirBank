@@ -72,7 +72,7 @@ public class Member extends BaseTimeEntity {
 	@Convert(converter = MemberRoleConverter.class)
 	private MemberRole role = MemberRole.UNKNOWN;
 
-	public static Member of(PostLoginRequestDto postLoginRequestDto) {
+	public static Member from(PostLoginRequestDto postLoginRequestDto) {
 		return Member.builder()
 			.oauthIdentifier(postLoginRequestDto.getId())
 			.imageUrl(getImageUrl(postLoginRequestDto.getKakaoAccount().getProfile().getProfileImageUrl(),
