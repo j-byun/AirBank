@@ -8,14 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pangpang.airbank.domain.fund.domain.FundManagement;
 import com.pangpang.airbank.domain.fund.repository.FundManagementRepository;
-import com.pangpang.airbank.domain.group.domain.MemberRelationship;
+import com.pangpang.airbank.domain.group.domain.Group;
 import com.pangpang.airbank.domain.group.dto.CommonFundManagementRequestDto;
 import com.pangpang.airbank.domain.group.dto.CommonIdResponseDto;
 import com.pangpang.airbank.domain.group.dto.GetPartnersResponseDto;
 import com.pangpang.airbank.domain.group.dto.PatchConfirmRequestDto;
 import com.pangpang.airbank.domain.group.dto.PatchFundManagementResponseDto;
 import com.pangpang.airbank.domain.group.dto.PostEnrollChildRequestDto;
-import com.pangpang.airbank.domain.group.repository.MemberRelationshipRepository;
+import com.pangpang.airbank.domain.group.repository.GroupRepository;
 import com.pangpang.airbank.domain.member.domain.Member;
 import com.pangpang.airbank.domain.member.repository.MemberRepository;
 import com.pangpang.airbank.global.error.exception.FundException;
@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class GroupServiceImpl implements GroupService {
-	private final MemberRelationshipRepository memberRelationshipRepository;
+	private final GroupRepository groupRepository;
 	private final MemberRepository memberRepository;
 	private final FundManagementRepository fundManagementRepository;
 
@@ -43,17 +43,17 @@ public class GroupServiceImpl implements GroupService {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
 
-		List<MemberRelationship> memberRelationships = new ArrayList<>();
+		List<Group> groups = new ArrayList<>();
 
 		if (member.getRole().getName().equals(MemberRole.PARENT.getName())) {
-			memberRelationships = memberRelationshipRepository.findAllByParentIdWithChildAsActive(member.getId());
+			groups = groupRepository.findAllByParentIdWithChildAsActive(member.getId());
 		}
 
 		if (member.getRole().getName().equals(MemberRole.CHILD.getName())) {
-			memberRelationships = memberRelationshipRepository.findAllByChildIdWithParentAsActive(member.getId());
+			groups = groupRepository.findAllByChildIdWithParentAsActive(member.getId());
 		}
 
-		return GetPartnersResponseDto.of(memberRelationships, member);
+		return GetPartnersResponseDto.of(groups, member);
 	}
 
 	@Transactional
@@ -69,15 +69,15 @@ public class GroupServiceImpl implements GroupService {
 		Member childMember = memberRepository.findByChildPhoneNumber(postEnrollChildRequestDto.getPhoneNumber())
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_CHILD_MEMBER_BY_PHONE_NUMBER));
 
-		memberRelationshipRepository.findByChildId(childMember.getId()).ifPresent((memberRelationship) -> {
-			if (memberRelationship.getActivated()) {
+		groupRepository.findByChildId(childMember.getId()).ifPresent((group) -> {
+			if (group.getActivated()) {
 				throw new GroupException(GroupErrorInfo.ALREADY_HAD_PARENT);
 			}
 			throw new GroupException(GroupErrorInfo.ENROLL_IN_PROGRESS);
 		});
 
-		MemberRelationship memberRelationship = MemberRelationship.of(member, childMember);
-		return new CommonIdResponseDto(memberRelationshipRepository.save(memberRelationship).getId());
+		Group group = Group.of(member, childMember);
+		return new CommonIdResponseDto(groupRepository.save(group).getId());
 	}
 
 	@Transactional
@@ -91,16 +91,16 @@ public class GroupServiceImpl implements GroupService {
 			throw new GroupException(GroupErrorInfo.CONFIRM_PERMISSION_DENIED);
 		}
 
-		MemberRelationship memberRelationship = memberRelationshipRepository.findByIdAndChildId(groupId, member.getId())
-			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_MEMBER_RELATIONSHIP_BY_CHILD_ID));
+		Group group = groupRepository.findByIdAndChildId(groupId, member.getId())
+			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_CHILD_ID));
 
 		if (patchConfirmRequestDto.getIsAccept()) {
-			memberRelationship.setActivated(true);
-			return new CommonIdResponseDto(memberRelationship.getId());
+			group.setActivated(true);
+			return new CommonIdResponseDto(group.getId());
 		}
 
-		memberRelationship.setActivated(false);
-		return new CommonIdResponseDto(memberRelationship.getId());
+		group.setActivated(false);
+		return new CommonIdResponseDto(group.getId());
 	}
 
 	@Transactional
@@ -115,15 +115,15 @@ public class GroupServiceImpl implements GroupService {
 			throw new FundException(FundErrorInfo.UPDATE_FUND_MANAGEMENT_PERMISSION_DENIED);
 		}
 
-		MemberRelationship memberRelationship = memberRelationshipRepository.findByIdAndParentId(groupId,
+		Group group = groupRepository.findByIdAndParentId(groupId,
 				member.getId())
-			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_MEMBER_RELATIONSHIP_BY_PARENT_ID));
+			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_PARENT_ID));
 
-		if (fundManagementRepository.existsByMemberRelationshipId(memberRelationship.getId())) {
+		if (fundManagementRepository.existsByGroupId(group.getId())) {
 			throw new FundException(FundErrorInfo.ALREADY_EXISTS_FUND_MANAGEMENT);
 		}
 
-		FundManagement fundManagement = FundManagement.of(memberRelationship, commonFundManagementRequestDto);
+		FundManagement fundManagement = FundManagement.of(group, commonFundManagementRequestDto);
 		return new CommonIdResponseDto(fundManagementRepository.save(fundManagement).getId());
 	}
 
@@ -135,7 +135,7 @@ public class GroupServiceImpl implements GroupService {
 	 * @param groupId Long
 	 * @return PatchFundManagementResponseDto
 	 * @see MemberRepository
-	 * @see MemberRelationshipRepository
+	 * @see GroupRepository
 	 * @see FundManagementRepository
 	 */
 	@Transactional
@@ -152,12 +152,12 @@ public class GroupServiceImpl implements GroupService {
 
 		log.info(String.valueOf(groupId));
 		log.info(String.valueOf(member.getId()));
-		MemberRelationship memberRelationship = memberRelationshipRepository.findByIdAndParentId(groupId,
+		Group group = groupRepository.findByIdAndParentId(groupId,
 				member.getId())
-			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_MEMBER_RELATIONSHIP_BY_PARENT_ID));
+			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_PARENT_ID));
 
-		FundManagement fundManagement = fundManagementRepository.findByMemberRelationshipId(memberRelationship.getId())
-			.orElseThrow(() -> new FundException(FundErrorInfo.NOT_FOUND_FUND_MANAGEMENT_BY_MEMBER_RELATIONSHIP_ID));
+		FundManagement fundManagement = fundManagementRepository.findByGroupId(group.getId())
+			.orElseThrow(() -> new FundException(FundErrorInfo.NOT_FOUND_FUND_MANAGEMENT_BY_GROUP_ID));
 
 		fundManagement.updateFundManagement(commonFundManagementRequestDto);
 		return PatchFundManagementResponseDto.from(commonFundManagementRequestDto);
@@ -174,7 +174,7 @@ public class GroupServiceImpl implements GroupService {
 	@Transactional(readOnly = true)
 	@Override
 	public Boolean isMemberInGroup(Long memberId, Long groupId) {
-		return memberRelationshipRepository.existsByIdAndPartnerId(groupId, memberId);
+		return groupRepository.existsByIdAndPartnerId(groupId, memberId);
 	}
 
 }

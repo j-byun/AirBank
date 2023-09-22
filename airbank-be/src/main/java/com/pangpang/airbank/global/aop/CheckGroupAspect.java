@@ -29,7 +29,7 @@ public class CheckGroupAspect {
 		AuthenticatedMemberArgument member = findAuthenticatedMemberArgument(joinPoint);
 
 		if (!groupService.isMemberInGroup(member.getMemberId(), groupId)) {
-			throw new GroupException(GroupErrorInfo.INVALID_GROUP_ID);
+			throw new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_ID_AND_MEMBER_ID);
 		}
 	}
 
