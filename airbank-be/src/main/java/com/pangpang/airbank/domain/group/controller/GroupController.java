@@ -83,7 +83,7 @@ public class GroupController {
 	})
 	@PatchMapping("/confirm")
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> confirmEnrollment(
-		@RequestBody PatchConfirmRequestDto patchConfirmRequestDto, @RequestParam Long groupId) {
+		@RequestBody PatchConfirmRequestDto patchConfirmRequestDto, @RequestParam("group_id") Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(2L);
 
 		return ResponseEntity.ok()
@@ -103,7 +103,8 @@ public class GroupController {
 	})
 	@PostMapping("/fund")
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> saveFundManagement(
-		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto, @RequestParam() Long groupId) {
+		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto,
+		@RequestParam("group_id") Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
@@ -123,13 +124,15 @@ public class GroupController {
 	})
 	@PatchMapping("/fund")
 	public ResponseEntity<EnvelopeResponse<PatchFundManagementResponseDto>> updateFundManagement(
-		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto, @RequestParam() Long groupId) {
+		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto,
+		@RequestParam("group_id") Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
 
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<PatchFundManagementResponseDto>builder()
 				.code(HttpStatus.OK.value())
-				.data(groupService.updateFundManagement(member.getMemberId(), commonFundManagementRequestDto, groupId))
+				.data(groupService.updateFundManagement(member.getMemberId(), commonFundManagementRequestDto,
+					groupId))
 				.build());
 	}
 }

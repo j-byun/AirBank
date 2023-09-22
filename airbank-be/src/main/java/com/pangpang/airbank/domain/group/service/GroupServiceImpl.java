@@ -127,6 +127,17 @@ public class GroupServiceImpl implements GroupService {
 		return new CommonIdResponseDto(fundManagementRepository.save(fundManagement).getId());
 	}
 
+	/**
+	 *  자금 관리 수정
+	 *
+	 * @param memberId Long
+	 * @param commonFundManagementRequestDto CommonFundManagementRequestDto
+	 * @param groupId Long
+	 * @return PatchFundManagementResponseDto
+	 * @see MemberRepository
+	 * @see MemberRelationshipRepository
+	 * @see FundManagementRepository
+	 */
 	@Transactional
 	@Override
 	public PatchFundManagementResponseDto updateFundManagement(Long memberId,
@@ -139,6 +150,8 @@ public class GroupServiceImpl implements GroupService {
 			throw new FundException(FundErrorInfo.UPDATE_FUND_MANAGEMENT_PERMISSION_DENIED);
 		}
 
+		log.info(String.valueOf(groupId));
+		log.info(String.valueOf(member.getId()));
 		MemberRelationship memberRelationship = memberRelationshipRepository.findByIdAndParentId(groupId,
 				member.getId())
 			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_MEMBER_RELATIONSHIP_BY_PARENT_ID));
@@ -151,7 +164,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	/**
-	 *  memberId와 groupId가 매치되어 유효한 그룹인지 확인하는 메소드
+	 *  memberId와 groupId가 매치되어 유효한 그룹인지 확인
 	 *
 	 * @param memberId Long
 	 * @param groupId Long
