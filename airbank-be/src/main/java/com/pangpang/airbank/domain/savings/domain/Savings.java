@@ -63,6 +63,12 @@ public class Savings extends BaseTimeEntity {
 	private Integer month;
 
 	@NotNull
+	@Builder.Default
+	@ColumnDefault("0")
+	@Column
+	private Integer paymentCount = 0;
+
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "group_id",
 		foreignKey = @ForeignKey(name = "fk_savings_to_group_group_id"))
