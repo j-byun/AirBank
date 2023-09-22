@@ -3,11 +3,15 @@ package com.pangpang.airbank.domain.savings.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pangpang.airbank.domain.group.dto.CommonIdResponseDto;
 import com.pangpang.airbank.domain.savings.dto.GetCurrentSavingsResponseDto;
+import com.pangpang.airbank.domain.savings.dto.PostSaveSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.service.SavingsService;
 import com.pangpang.airbank.global.common.response.EnvelopeResponse;
 import com.pangpang.airbank.global.resolver.dto.AuthenticatedMemberArgument;
@@ -40,7 +44,26 @@ public class SavingsController {
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<GetCurrentSavingsResponseDto>builder()
 				.code(HttpStatus.OK.value())
-				.data(savingsService.getCurrentSavings(member.getMemberId(), groupId))
+				.data(savingsService.getCurrentSavings(groupId))
+				.build());
+	}
+
+	/**
+	 *  티끌모으기 생성
+	 *
+	 * @param postSaveSavingsRequestDto PostSaveSavingsRequestDto
+	 * @return ResponseEntity<EnvelopeResponse < CommonIdResponseDto>>
+	 * @see SavingsService
+	 */
+	@PostMapping("/item")
+	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> saveSavings(
+		@RequestBody PostSaveSavingsRequestDto postSaveSavingsRequestDto) {
+		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(2L);
+
+		return ResponseEntity.status(HttpStatus.CREATED)
+			.body(EnvelopeResponse.<CommonIdResponseDto>builder()
+				.code(HttpStatus.CREATED.value())
+				.data(savingsService.saveSavings(member.getMemberId(), postSaveSavingsRequestDto))
 				.build());
 	}
 }

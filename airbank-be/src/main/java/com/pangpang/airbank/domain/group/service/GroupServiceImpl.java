@@ -80,7 +80,7 @@ public class GroupServiceImpl implements GroupService {
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
 
 		if (!member.getRole().getName().equals(MemberRole.PARENT.getName())) {
-			throw new GroupException(GroupErrorInfo.ENROLL_PERMISSION_DENIED);
+			throw new GroupException(GroupErrorInfo.ENROLL_CHILD_PERMISSION_DENIED);
 		}
 
 		Member childMember = memberRepository.findByChildPhoneNumber(postEnrollChildRequestDto.getPhoneNumber())
@@ -115,7 +115,7 @@ public class GroupServiceImpl implements GroupService {
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
 
 		if (!member.getRole().getName().equals(MemberRole.CHILD.getName())) {
-			throw new GroupException(GroupErrorInfo.CONFIRM_PERMISSION_DENIED);
+			throw new GroupException(GroupErrorInfo.CONFIRM_ENROLLMENT_PERMISSION_DENIED);
 		}
 
 		Group group = groupRepository.findByIdAndChildId(groupId, member.getId())

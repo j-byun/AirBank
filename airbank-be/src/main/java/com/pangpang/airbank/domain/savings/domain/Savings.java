@@ -1,11 +1,12 @@
 package com.pangpang.airbank.domain.savings.domain;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.hibernate.annotations.ColumnDefault;
 
 import com.pangpang.airbank.domain.BaseTimeEntity;
 import com.pangpang.airbank.domain.group.domain.Group;
+import com.pangpang.airbank.domain.savings.dto.PostSaveSavingsRequestDto;
 import com.pangpang.airbank.global.meta.converter.SavingsStatusConverter;
 import com.pangpang.airbank.global.meta.domain.SavingsStatus;
 
@@ -48,15 +49,21 @@ public class Savings extends BaseTimeEntity {
 	private Long monthlyAmount;
 
 	@NotNull
+	@Builder.Default
+	@ColumnDefault("0")
 	@Column
-	private LocalDateTime startedAt;
+	private Long totalAmount = 0L;
 
 	@NotNull
 	@Column
-	private LocalDateTime expiredAt;
+	private LocalDate startedAt;
+
+	@NotNull
+	@Column
+	private LocalDate expiredAt;
 
 	@Column
-	private LocalDateTime endedAt;
+	private LocalDate endedAt;
 
 	@NotNull
 	@Column
@@ -80,4 +87,21 @@ public class Savings extends BaseTimeEntity {
 	@Column(length = 20)
 	@Convert(converter = SavingsStatusConverter.class)
 	private SavingsStatus status = SavingsStatus.PENDING;
+
+	public static Savings of(Group group, PostSaveSavingsRequestDto postSaveSavingsRequestDto) {
+		Long amount = postSaveSavingsRequestDto.getAmount();
+		Integer month = postSaveSavingsRequestDto.getMonth();
+		Long parentsAmount = postSaveSavingsRequestDto.getParentsAmount();
+
+		return Savings.builder()
+			.myAmount(amount - parentsAmount)
+			.parentsAmount(parentsAmount)
+			.monthlyAmount((amount - parentsAmount) / month)
+			.startedAt(LocalDate.now())
+			.expiredAt(LocalDate.now().plusMonths(month))
+			.endedAt(LocalDate.now().plusMonths(month))
+			.month(month)
+			.group(group)
+			.build();
+	}
 }

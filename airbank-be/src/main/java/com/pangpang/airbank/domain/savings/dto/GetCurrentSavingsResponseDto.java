@@ -1,6 +1,6 @@
 package com.pangpang.airbank.domain.savings.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.pangpang.airbank.domain.savings.domain.Savings;
 import com.pangpang.airbank.domain.savings.domain.SavingsItem;
@@ -15,9 +15,9 @@ public class GetCurrentSavingsResponseDto {
 	private Long myAmount;
 	private Long parentsAmount;
 	private Long monthlyAmount;
-	private LocalDateTime startedAt;
-	private LocalDateTime expiredAt;
-	private LocalDateTime endedAt;
+	private LocalDate startedAt;
+	private LocalDate expiredAt;
+	private LocalDate endedAt;
 	private String status;
 	private Integer delayCount;
 	private SavingsElement savingsItem;
