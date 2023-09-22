@@ -32,6 +32,5 @@ public class NhApiManagement extends BaseTimeEntity {
 
 	public void updateIsTuno() {
 		this.isTuno = this.isTuno + 1;
-		// return this;
 	}
 }

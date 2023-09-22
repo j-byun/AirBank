@@ -3,7 +3,7 @@ package com.pangpang.airbank.global.common.api.nh;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,8 +14,7 @@ import com.pangpang.airbank.global.common.api.nh.dto.CommonHeaderDto;
 import com.pangpang.airbank.global.common.api.nh.dto.GetFinAccountRequestDto;
 import com.pangpang.airbank.global.common.api.nh.dto.GetFinAccountResponseDto;
 import com.pangpang.airbank.global.common.api.nh.repository.NhApiManagementRepository;
-import com.pangpang.airbank.global.error.exception.AccountException;
-import com.pangpang.airbank.global.error.info.AccountErrorInfo;
+import com.pangpang.airbank.global.common.api.nh.service.NhApiManagementService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,11 +25,11 @@ import lombok.RequiredArgsConstructor;
  * @See NhApiManagementRepository
  * @See ObjectMapper
  */
-@Service
+@Component
 @RequiredArgsConstructor
 public class NHApi {
+	private final NhApiManagementService nhApiManagementService;
 	private final NHApiConstantProvider nhApiConstantProvider;
-	private final NhApiManagementRepository nhApiManagementRepository;
 	private final ObjectMapper objectMapper;
 
 	/**
@@ -43,16 +42,16 @@ public class NHApi {
 	public GetFinAccountResponseDto getFinAccountDirect(PostEnrollAccountRequestDto postEnrollAccountRequestDto) throws
 		JsonProcessingException {
 		GetFinAccountRequestDto getFinAccountRequestDto = GetFinAccountRequestDto.builder()
-			.Header(
+			.header(
 				getRequestHeader().toBuilder()
-					.ApiNm("OpenFinAccountDirect")
-					.ApiSvcCd("DrawingTransferA")
+					.apiNm("OpenFinAccountDirect")
+					.apiSvcCd("DrawingTransferA")
 					.build()
 			)
-			.DrtrRgyn("Y")
-			.BrdtBrno(nhApiConstantProvider.getBirth())
-			.Bncd(postEnrollAccountRequestDto.getBankCode())
-			.Acno(postEnrollAccountRequestDto.getAccountNumber())
+			.drtrRgyn("Y")
+			.brdtBrno(nhApiConstantProvider.getBirth())
+			.bncd(postEnrollAccountRequestDto.getBankCode())
+			.acno(postEnrollAccountRequestDto.getAccountNumber())
 			.build();
 
 		String result = WebClient.create()
@@ -79,19 +78,14 @@ public class NHApi {
 		SimpleDateFormat dayFormatter = new SimpleDateFormat("yyyyMMdd");
 		SimpleDateFormat timeFormatter = new SimpleDateFormat("HHmmss");
 		Date now = new Date();
-		NhApiManagement nhApiManagement = nhApiManagementRepository.findById(1L)
-			.orElseThrow(() -> new AccountException(AccountErrorInfo.ACCOUNT_REQUEST_DATA_ERROR));
-
-		nhApiManagement.updateIsTuno();
-		nhApiManagementRepository.save(nhApiManagement);
 
 		return CommonHeaderDto.builder()
-			.Tsymd(dayFormatter.format(now))
-			.Trtm(timeFormatter.format(now))
-			.Iscd(nhApiConstantProvider.getIscd())
-			.FintechApsno("001")
-			.IsTuno(nhApiManagement.getIsTuno().toString())
-			.AccessToken(nhApiConstantProvider.getAccessToken())
+			.tsymd(dayFormatter.format(now))
+			.trtm(timeFormatter.format(now))
+			.iscd(nhApiConstantProvider.getIscd())
+			.fintechApsno("001")
+			.isTuno(nhApiManagementService.updateIsTuno().toString())
+			.accessToken(nhApiConstantProvider.getAccessToken())
 			.build();
 	}
 

@@ -1,6 +1,7 @@
 package com.pangpang.airbank.global.common.api.nh.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +12,8 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
+@JsonNaming(value = PropertyNamingStrategy.PascalCaseStrategy.class)
 public class GetFinAccountResponseDto {
-	@JsonProperty
-	private CommonHeaderDto Header;
-	@JsonProperty
-	private String Rgno;
+	private CommonHeaderDto header;
+	private String rgno;
 }

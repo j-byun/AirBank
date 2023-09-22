@@ -14,9 +14,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @JsonNaming(value = PropertyNamingStrategy.PascalCaseStrategy.class)
 public class GetFinAccountRequestDto {
-	private CommonHeaderDto Header;
-	private String DrtrRgyn;
-	private String BrdtBrno;
-	private String Bncd;
-	private String Acno;
+	private CommonHeaderDto header;
+	private String drtrRgyn;
+	private String brdtBrno;
+	private String bncd;
+	private String acno;
 }

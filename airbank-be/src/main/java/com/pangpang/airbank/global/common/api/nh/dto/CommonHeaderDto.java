@@ -1,6 +1,7 @@
 package com.pangpang.airbank.global.common.api.nh.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,44 +12,17 @@ import lombok.RequiredArgsConstructor;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @RequiredArgsConstructor
+@JsonNaming(value = PropertyNamingStrategy.PascalCaseStrategy.class)
 public class CommonHeaderDto {
-	@JsonProperty
-	private String ApiNm;
-	@JsonProperty
-	private String Tsymd;
-	@JsonProperty
-	private String Trtm;
-	@JsonProperty
-	private String Iscd;
-	@JsonProperty
-	private String FintechApsno;
-	@JsonProperty
-	private String ApiSvcCd;
-	@JsonProperty
-	private String IsTuno;
-	@JsonProperty
-	private String AccessToken;
-	@JsonProperty
-	private String Rpcd;
-	@JsonProperty
-	private String Rsms;
-	@JsonProperty
-	private String Rgno;
-
-	@Override
-	public String toString() {
-		return "CommonHeaderDto{" +
-			"ApiNm='" + ApiNm + '\'' +
-			", Tsymd='" + Tsymd + '\'' +
-			", Trtm='" + Trtm + '\'' +
-			", Iscd='" + Iscd + '\'' +
-			", FintechApsno='" + FintechApsno + '\'' +
-			", APISvcCd='" + ApiSvcCd + '\'' +
-			", Istuno='" + IsTuno + '\'' +
-			", AccessToken='" + AccessToken + '\'' +
-			", Rpcd='" + Rpcd + '\'' +
-			", Rsms='" + Rsms + '\'' +
-			", Rgno='" + Rgno + '\'' +
-			'}';
-	}
+	private String apiNm;
+	private String tsymd;
+	private String trtm;
+	private String iscd;
+	private String fintechApsno;
+	private String apiSvcCd;
+	private String isTuno;
+	private String accessToken;
+	private String rpcd;
+	private String rsms;
+	private String rgno;
 }
