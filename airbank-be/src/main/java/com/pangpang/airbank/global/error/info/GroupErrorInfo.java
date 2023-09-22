@@ -11,7 +11,8 @@ public enum GroupErrorInfo {
 	ENROLL_PERMISSION_DENIED(HttpStatus.FORBIDDEN, 1302, "자녀를 등록할 권한이 없습니다."),
 	NOT_FOUND_MEMBER_RELATIONSHIP_BY_CHILD_ID(HttpStatus.NOT_FOUND, 1303, "등록중인 그룹이 없습니다."),
 	CONFIRM_PERMISSION_DENIED(HttpStatus.FORBIDDEN, 1304, "자녀만 접근할 수 있습니다."),
-	NOT_FOUND_MEMBER_RELATIONSHIP_BY_PARENT_ID(HttpStatus.NOT_FOUND, 1305, "그룹을 찾을 수 없습니다.");
+	NOT_FOUND_MEMBER_RELATIONSHIP_BY_PARENT_ID(HttpStatus.NOT_FOUND, 1305, "그룹을 찾을 수 없습니다."),
+	INVALID_GROUP_ID(HttpStatus.FORBIDDEN, 1306, "유효하지 않은 그룹입니다.");
 
 	private final HttpStatus status;
 	private final Integer code;

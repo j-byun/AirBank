@@ -150,4 +150,18 @@ public class GroupServiceImpl implements GroupService {
 		return PatchFundManagementResponseDto.from(commonFundManagementRequestDto);
 	}
 
+	/**
+	 *  memberId와 groupId가 매치되어 유효한 그룹인지 확인하는 메소드
+	 *
+	 * @param memberId Long
+	 * @param groupId Long
+	 * @return Boolean
+	 * @see MemberRepository
+	 */
+	@Transactional(readOnly = true)
+	@Override
+	public Boolean isMemberInGroup(Long memberId, Long groupId) {
+		return memberRelationshipRepository.existsByIdAndPartnerId(groupId, memberId);
+	}
+
 }

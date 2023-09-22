@@ -27,4 +27,8 @@ public interface MemberRelationshipRepository extends JpaRepository<MemberRelati
 	Optional<MemberRelationship> findByChildId(Long childId);
 
 	Optional<MemberRelationship> findByIdAndParentId(Long id, Long parentId);
+
+	@Query("select case when count(m) > 0 then true else false end from member_relationship m "
+		+ "where m.id = :id and (m.parent.id = :partnerId or (m.child.id = :partnerId and m.activated = true))")
+	Boolean existsByIdAndPartnerId(Long id, Long partnerId);
 }
