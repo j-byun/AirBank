@@ -29,6 +29,6 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 	Optional<Group> findByIdAndParentId(Long id, Long parentId);
 
 	@Query("select case when count(m) > 0 then true else false end from group m "
-		+ "where m.id = :id and (m.parent.id = :partnerId or (m.child.id = :partnerId and m.activated = true))")
+		+ "where m.id = :id and (m.parent.id = :partnerId or m.child.id = :partnerId) and m.activated = true")
 	Boolean existsByIdAndPartnerId(Long id, Long partnerId);
 }
