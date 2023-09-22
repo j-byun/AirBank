@@ -53,7 +53,7 @@ public class GroupServiceImpl implements GroupService {
 			groups = groupRepository.findAllByChildIdWithParentAsActive(member.getId());
 		}
 
-		return GetPartnersResponseDto.of(groups, member);
+		return GetPartnersResponseDto.of(groups, memberId);
 	}
 
 	@Transactional

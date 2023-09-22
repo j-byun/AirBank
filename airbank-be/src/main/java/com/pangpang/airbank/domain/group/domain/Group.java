@@ -5,7 +5,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import com.pangpang.airbank.domain.member.domain.Member;
-import com.pangpang.airbank.global.meta.domain.MemberRole;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -64,11 +63,11 @@ public class Group {
 			.build();
 	}
 
-	public Member getPartnerMember(Member member) {
-		if (member.getRole().getName().equals(MemberRole.PARENT.getName())) {
-			return this.getChild();
+	public Member getPartnerMember(Long memberId) {
+		if (this.parent.getId().equals(memberId)) {
+			return this.child;
 		}
-		return this.getParent();
+		return this.parent;
 	}
 
 	public void setActivated(Boolean activated) {
