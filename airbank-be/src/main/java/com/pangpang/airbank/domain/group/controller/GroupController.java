@@ -107,14 +107,14 @@ public class GroupController {
 		@ApiResponse(responseCode = "1303", description = "등록중인 그룹이 없습니다.", content = @Content)
 	})
 	@PatchMapping("/confirm")
-	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> confirmEnrollment(
+	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> confirmEnrollmentChild(
 		@RequestBody PatchConfirmRequestDto patchConfirmRequestDto, @RequestParam("group_id") Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(2L);
 
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<CommonIdResponseDto>builder()
 				.code(HttpStatus.OK.value())
-				.data(groupService.confirmEnrollment(member.getMemberId(), patchConfirmRequestDto, groupId))
+				.data(groupService.confirmEnrollmentChild(member.getMemberId(), patchConfirmRequestDto, groupId))
 				.build());
 	}
 

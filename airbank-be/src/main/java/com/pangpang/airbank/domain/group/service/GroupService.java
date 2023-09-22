@@ -12,7 +12,8 @@ public interface GroupService {
 
 	CommonIdResponseDto enrollChild(Long memberId, PostEnrollChildRequestDto postEnrollChildRequestDto);
 
-	CommonIdResponseDto confirmEnrollment(Long memberId, PatchConfirmRequestDto patchConfirmRequestDto, Long groupId);
+	CommonIdResponseDto confirmEnrollmentChild(Long memberId, PatchConfirmRequestDto patchConfirmRequestDto,
+		Long groupId);
 
 	CommonIdResponseDto saveFundManagement(Long memberId,
 		CommonFundManagementRequestDto commonFundManagementRequestDto, Long groupId);

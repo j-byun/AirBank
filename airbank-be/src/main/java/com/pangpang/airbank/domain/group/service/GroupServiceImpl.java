@@ -109,7 +109,7 @@ public class GroupServiceImpl implements GroupService {
 	 */
 	@Transactional
 	@Override
-	public CommonIdResponseDto confirmEnrollment(Long memberId, PatchConfirmRequestDto patchConfirmRequestDto,
+	public CommonIdResponseDto confirmEnrollmentChild(Long memberId, PatchConfirmRequestDto patchConfirmRequestDto,
 		Long groupId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
