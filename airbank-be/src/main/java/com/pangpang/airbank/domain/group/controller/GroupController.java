@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pangpang.airbank.domain.group.dto.CommonFundManagementRequestDto;
 import com.pangpang.airbank.domain.group.dto.CommonIdResponseDto;
 import com.pangpang.airbank.domain.group.dto.GetPartnersResponseDto;
-import com.pangpang.airbank.domain.group.dto.PatchConfirmRequestDto;
+import com.pangpang.airbank.domain.group.dto.PatchConfirmChildRequestDto;
 import com.pangpang.airbank.domain.group.dto.PatchFundManagementResponseDto;
 import com.pangpang.airbank.domain.group.dto.PostEnrollChildRequestDto;
 import com.pangpang.airbank.domain.group.service.GroupService;
@@ -93,7 +93,7 @@ public class GroupController {
 	/**
 	 *  자녀 등록 수락/거절
 	 *
-	 * @param patchConfirmRequestDto PatchConfirmRequestDto
+	 * @param patchConfirmChildRequestDto PatchConfirmRequestDto
 	 * @param groupId Long
 	 * @return ResponseEntity<EnvelopeResponse < CommonIdResponseDto>>
 	 * @see GroupService
@@ -108,13 +108,13 @@ public class GroupController {
 	})
 	@PatchMapping("/confirm")
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> confirmEnrollmentChild(
-		@RequestBody PatchConfirmRequestDto patchConfirmRequestDto, @RequestParam("group_id") Long groupId) {
+		@RequestBody PatchConfirmChildRequestDto patchConfirmChildRequestDto, @RequestParam("group_id") Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(2L);
 
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<CommonIdResponseDto>builder()
 				.code(HttpStatus.OK.value())
-				.data(groupService.confirmEnrollmentChild(member.getMemberId(), patchConfirmRequestDto, groupId))
+				.data(groupService.confirmEnrollmentChild(member.getMemberId(), patchConfirmChildRequestDto, groupId))
 				.build());
 	}
 

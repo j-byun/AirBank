@@ -12,7 +12,7 @@ import com.pangpang.airbank.domain.group.domain.Group;
 import com.pangpang.airbank.domain.group.dto.CommonFundManagementRequestDto;
 import com.pangpang.airbank.domain.group.dto.CommonIdResponseDto;
 import com.pangpang.airbank.domain.group.dto.GetPartnersResponseDto;
-import com.pangpang.airbank.domain.group.dto.PatchConfirmRequestDto;
+import com.pangpang.airbank.domain.group.dto.PatchConfirmChildRequestDto;
 import com.pangpang.airbank.domain.group.dto.PatchFundManagementResponseDto;
 import com.pangpang.airbank.domain.group.dto.PostEnrollChildRequestDto;
 import com.pangpang.airbank.domain.group.repository.GroupRepository;
@@ -101,7 +101,7 @@ public class GroupServiceImpl implements GroupService {
 	 *  부모가 요청한 자녀 등록을 자녀가 수락 또는 거절하는 메소드, 자녀만 등록가능
 	 *
 	 * @param memberId Long
-	 * @param patchConfirmRequestDto PatchConfirmRequestDto
+	 * @param patchConfirmChildRequestDto PatchConfirmRequestDto
 	 * @param groupId Long
 	 * @return CommonIdResponseDto
 	 * @see MemberRepository
@@ -109,7 +109,8 @@ public class GroupServiceImpl implements GroupService {
 	 */
 	@Transactional
 	@Override
-	public CommonIdResponseDto confirmEnrollmentChild(Long memberId, PatchConfirmRequestDto patchConfirmRequestDto,
+	public CommonIdResponseDto confirmEnrollmentChild(Long memberId,
+		PatchConfirmChildRequestDto patchConfirmChildRequestDto,
 		Long groupId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
@@ -121,7 +122,7 @@ public class GroupServiceImpl implements GroupService {
 		Group group = groupRepository.findByIdAndChildId(groupId, member.getId())
 			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_CHILD_ID));
 
-		if (patchConfirmRequestDto.getIsAccept()) {
+		if (patchConfirmChildRequestDto.getIsAccept()) {
 			group.setActivated(true);
 			return new CommonIdResponseDto(group.getId());
 		}
