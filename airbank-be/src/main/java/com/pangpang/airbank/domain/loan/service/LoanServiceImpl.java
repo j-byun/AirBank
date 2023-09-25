@@ -19,7 +19,7 @@ public class LoanServiceImpl implements LoanService {
 	private final FundManagementRepository fundManagementRepository;
 
 	/**
-	 *  땡겨쓰기의 한도, 땡겨쓴 금액을 조회하는 메소드, 부모와 자녀가 조회 가능하다.
+	 *  땡겨쓰기(한도, 땡겨쓴 금액)를 조회하는 메소드, 부모와 자녀가 조회 가능하다.
 	 *
 	 * @param memberId Long
 	 * @param groupId Long
