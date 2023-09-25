@@ -7,12 +7,12 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class PatchConfirmSavingsResponseDto {
+public class PatchCommonSavingsResponseDto {
 	private Long id;
 	private String status;
 
-	public static PatchConfirmSavingsResponseDto from(Savings savings) {
-		return PatchConfirmSavingsResponseDto.builder()
+	public static PatchCommonSavingsResponseDto from(Savings savings) {
+		return PatchCommonSavingsResponseDto.builder()
 			.id(savings.getId())
 			.status(savings.getStatus().getName())
 			.build();

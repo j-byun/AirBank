@@ -106,11 +106,15 @@ public class Savings extends BaseTimeEntity {
 			.build();
 	}
 
-	public void updateStatus(PatchConfirmSavingsRequestDto patchConfirmSavingsRequestDto) {
+	public void confirmSavings(PatchConfirmSavingsRequestDto patchConfirmSavingsRequestDto) {
 		if (patchConfirmSavingsRequestDto.getIsAccept()) {
 			this.status = SavingsStatus.PROCEEDING;
 			return;
 		}
 		this.status = SavingsStatus.REJECT;
+	}
+
+	public void cancelSavings() {
+		this.status = SavingsStatus.FAIL;
 	}
 }

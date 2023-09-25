@@ -11,8 +11,9 @@ import com.pangpang.airbank.domain.member.repository.MemberRepository;
 import com.pangpang.airbank.domain.savings.domain.Savings;
 import com.pangpang.airbank.domain.savings.domain.SavingsItem;
 import com.pangpang.airbank.domain.savings.dto.GetCurrentSavingsResponseDto;
+import com.pangpang.airbank.domain.savings.dto.PatchCancelSavingsRequestDto;
+import com.pangpang.airbank.domain.savings.dto.PatchCommonSavingsResponseDto;
 import com.pangpang.airbank.domain.savings.dto.PatchConfirmSavingsRequestDto;
-import com.pangpang.airbank.domain.savings.dto.PatchConfirmSavingsResponseDto;
 import com.pangpang.airbank.domain.savings.dto.PostSaveSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.repository.SavingsItemRepository;
 import com.pangpang.airbank.domain.savings.repository.SavingsRepository;
@@ -106,7 +107,7 @@ public class SavingsServiceImpl implements SavingsService {
 	 */
 	@Transactional
 	@Override
-	public PatchConfirmSavingsResponseDto confirmEnrollmentSavings(
+	public PatchCommonSavingsResponseDto confirmEnrollmentSavings(
 		Long memberId, PatchConfirmSavingsRequestDto patchConfirmSavingsRequestDto, Long groupId) {
 		if (!memberRepository.existsByIdAndRoleEquals(memberId, MemberRole.PARENT)) {
 			throw new SavingsException(SavingsErrorInfo.CONFIRM_SAVINGS_PERMISSION_DENIE);
@@ -115,7 +116,27 @@ public class SavingsServiceImpl implements SavingsService {
 		Savings savings = savingsRepository.findByGroupIdAndStatusEquals(groupId, SavingsStatus.PENDING)
 			.orElseThrow(() -> new SavingsException(SavingsErrorInfo.NOT_FOUND_SAVINGS_IN_PENDING));
 
-		savings.updateStatus(patchConfirmSavingsRequestDto);
-		return PatchConfirmSavingsResponseDto.from(savings);
+		savings.confirmSavings(patchConfirmSavingsRequestDto);
+		return PatchCommonSavingsResponseDto.from(savings);
+	}
+
+	@Transactional
+	@Override
+	public PatchCommonSavingsResponseDto cancelSavings(Long memberId,
+		PatchCancelSavingsRequestDto patchCancelSavingsRequestDto) {
+
+		if (!memberRepository.existsByIdAndRoleEquals(memberId, MemberRole.CHILD)) {
+			throw new SavingsException(SavingsErrorInfo.CANCEL_SAVINGS_PERMISSION_DENIED);
+		}
+
+		Savings savings = savingsRepository.findById(patchCancelSavingsRequestDto.getId())
+			.orElseThrow(() -> new SavingsException(SavingsErrorInfo.NOT_FOUND_SAVINGS_IN_PROCEEDING));
+
+		if (savings.getStatus().getName().equals(SavingsStatus.FAIL.getName())) {
+			throw new SavingsException(SavingsErrorInfo.ALREADY_EXIT_SAVINGS);
+		}
+
+		savings.cancelSavings();
+		return PatchCommonSavingsResponseDto.from(savings);
 	}
 }

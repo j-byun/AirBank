@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pangpang.airbank.domain.group.dto.CommonIdResponseDto;
 import com.pangpang.airbank.domain.savings.dto.GetCurrentSavingsResponseDto;
+import com.pangpang.airbank.domain.savings.dto.PatchCancelSavingsRequestDto;
+import com.pangpang.airbank.domain.savings.dto.PatchCommonSavingsResponseDto;
 import com.pangpang.airbank.domain.savings.dto.PatchConfirmSavingsRequestDto;
-import com.pangpang.airbank.domain.savings.dto.PatchConfirmSavingsResponseDto;
 import com.pangpang.airbank.domain.savings.dto.PostSaveSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.service.SavingsService;
 import com.pangpang.airbank.global.common.response.EnvelopeResponse;
@@ -79,16 +80,28 @@ public class SavingsController {
 	 * @see SavingsService
 	 */
 	@PatchMapping("/confirm")
-	public ResponseEntity<EnvelopeResponse<PatchConfirmSavingsResponseDto>> confirmEnrollmentSavings(
+	public ResponseEntity<EnvelopeResponse<PatchCommonSavingsResponseDto>> confirmEnrollmentSavings(
 		@RequestBody PatchConfirmSavingsRequestDto patchConfirmSavingsRequestDto,
 		@RequestParam("group_id") Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
 
 		return ResponseEntity.ok()
-			.body(EnvelopeResponse.<PatchConfirmSavingsResponseDto>builder()
+			.body(EnvelopeResponse.<PatchCommonSavingsResponseDto>builder()
 				.code(HttpStatus.OK.value())
 				.data(savingsService.confirmEnrollmentSavings(member.getMemberId(), patchConfirmSavingsRequestDto,
 					groupId))
+				.build());
+	}
+
+	@PatchMapping("/cancel")
+	public ResponseEntity<EnvelopeResponse<PatchCommonSavingsResponseDto>> cancelSavings(
+		@RequestBody PatchCancelSavingsRequestDto patchCancelSavingsRequestDto) {
+		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(2L);
+
+		return ResponseEntity.ok()
+			.body(EnvelopeResponse.<PatchCommonSavingsResponseDto>builder()
+				.code(HttpStatus.OK.value())
+				.data(savingsService.cancelSavings(member.getMemberId(), patchCancelSavingsRequestDto))
 				.build());
 	}
 }
