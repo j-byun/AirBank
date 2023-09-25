@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pangpang.airbank.domain.group.domain.Group;
 import com.pangpang.airbank.domain.group.dto.CommonIdResponseDto;
 import com.pangpang.airbank.domain.group.repository.GroupRepository;
-import com.pangpang.airbank.domain.member.domain.Member;
 import com.pangpang.airbank.domain.member.repository.MemberRepository;
 import com.pangpang.airbank.domain.savings.domain.Savings;
 import com.pangpang.airbank.domain.savings.domain.SavingsItem;
@@ -18,10 +17,8 @@ import com.pangpang.airbank.domain.savings.dto.PostSaveSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.repository.SavingsItemRepository;
 import com.pangpang.airbank.domain.savings.repository.SavingsRepository;
 import com.pangpang.airbank.global.error.exception.GroupException;
-import com.pangpang.airbank.global.error.exception.MemberException;
 import com.pangpang.airbank.global.error.exception.SavingsException;
 import com.pangpang.airbank.global.error.info.GroupErrorInfo;
-import com.pangpang.airbank.global.error.info.MemberErrorInfo;
 import com.pangpang.airbank.global.error.info.SavingsErrorInfo;
 import com.pangpang.airbank.global.meta.domain.MemberRole;
 import com.pangpang.airbank.global.meta.domain.SavingsStatus;
@@ -71,14 +68,11 @@ public class SavingsServiceImpl implements SavingsService {
 	@Transactional
 	@Override
 	public CommonIdResponseDto saveSavings(Long memberId, PostSaveSavingsRequestDto postSaveSavingsRequestDto) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
-
-		if (!member.getRole().getName().equals(MemberRole.CHILD.getName())) {
+		if (!memberRepository.existsByIdAndRoleEquals(memberId, MemberRole.CHILD)) {
 			throw new SavingsException(SavingsErrorInfo.ENROLL_SAVINGS_PERMISSION_DENIED);
 		}
 
-		Group group = groupRepository.findByChildId(member.getId())
+		Group group = groupRepository.findByChildIdAndActivatedTrue(memberId)
 			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_CHILD_ID));
 
 		if (savingsRepository.existsByGroupIdAndStatusEquals(group.getId(), SavingsStatus.PENDING)) {
