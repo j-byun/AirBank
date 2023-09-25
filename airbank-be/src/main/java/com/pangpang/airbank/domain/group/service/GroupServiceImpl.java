@@ -119,7 +119,7 @@ public class GroupServiceImpl implements GroupService {
 			throw new GroupException(GroupErrorInfo.CONFIRM_ENROLLMENT_PERMISSION_DENIED);
 		}
 
-		Group group = groupRepository.findByIdAndChildId(groupId, member.getId())
+		Group group = groupRepository.findByIdAndChildIdAndActivatedFalse(groupId, member.getId())
 			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_CHILD_ID));
 
 		if (patchConfirmChildRequestDto.getIsAccept()) {
