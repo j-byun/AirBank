@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pangpang.airbank.domain.auth.dto.GetLogoutResponseDto;
 import com.pangpang.airbank.domain.member.domain.Member;
+import com.pangpang.airbank.domain.member.dto.GetCreditResponseDto;
 import com.pangpang.airbank.domain.member.dto.GetLoginMemberResponseDto;
 import com.pangpang.airbank.domain.member.dto.GetMemberResponseDto;
 import com.pangpang.airbank.domain.member.dto.PatchMemberRequestDto;
@@ -145,7 +146,7 @@ public class MemberServiceImpl implements MemberService {
 		return memberRepository.existsById(memberId);
 	}
 
-	/*
+	/**
 	 *  신용점수 수정
 	 *
 	 * @param memberId Long
@@ -174,5 +175,19 @@ public class MemberServiceImpl implements MemberService {
 			(int)Math.round((creditRating.getMaxScore() - creditRating.getMinScore()) * rate));
 		member.setCreditScore(member.getCreditScore() + points);
 		creditHistoryService.saveCreditHistory(member);
+	}
+
+	/**
+	 *  신용 등급 조회
+	 *
+	 * @param memberId Long
+	 * @return 신용 등급
+	 * @see CreditRating
+	 */
+	@Transactional(readOnly = true)
+	@Override
+	public GetCreditResponseDto getCredit(Long memberId) {
+		Member member = getMemberByIdOrElseThrowException(memberId);
+		return new GetCreditResponseDto(CreditRating.getCreditRating(member.getCreditScore()).getRating());
 	}
 }
