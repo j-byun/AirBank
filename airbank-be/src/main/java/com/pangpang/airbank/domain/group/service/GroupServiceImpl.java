@@ -112,14 +112,11 @@ public class GroupServiceImpl implements GroupService {
 	public CommonIdResponseDto confirmEnrollmentChild(Long memberId,
 		PatchConfirmChildRequestDto patchConfirmChildRequestDto,
 		Long groupId) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
-
-		if (!member.getRole().getName().equals(MemberRole.CHILD.getName())) {
+		if (!memberRepository.existsByIdAndRoleEquals(memberId, MemberRole.CHILD)) {
 			throw new GroupException(GroupErrorInfo.CONFIRM_ENROLLMENT_PERMISSION_DENIED);
 		}
 
-		Group group = groupRepository.findByIdAndChildIdAndActivatedFalse(groupId, member.getId())
+		Group group = groupRepository.findByIdAndChildIdAndActivatedFalse(groupId, memberId)
 			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_CHILD_ID));
 
 		if (patchConfirmChildRequestDto.getIsAccept()) {
