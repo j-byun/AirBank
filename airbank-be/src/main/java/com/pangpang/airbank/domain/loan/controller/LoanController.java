@@ -25,6 +25,13 @@ public class LoanController {
 
 	private final LoanService loanService;
 
+	/**
+	 *  땡겨쓰기 조회
+	 *
+	 * @param groupId Long
+	 * @return ResponseEntity<EnvelopeResponse < GetLoanResponseDto>>
+	 * @see LoanService
+	 */
 	// @CheckGroup
 	@GetMapping()
 	public ResponseEntity<EnvelopeResponse<GetLoanResponseDto>> getLoan(@RequestParam("group_id") Long groupId) {

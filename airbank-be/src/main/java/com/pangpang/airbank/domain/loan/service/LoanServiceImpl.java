@@ -18,12 +18,19 @@ import lombok.extern.slf4j.Slf4j;
 public class LoanServiceImpl implements LoanService {
 	private final FundManagementRepository fundManagementRepository;
 
+	/**
+	 *  땡겨쓰기의 한도, 땡겨쓴 금액을 조회하는 메소드, 부모와 자녀가 조회 가능하다.
+	 *
+	 * @param memberId Long
+	 * @param groupId Long
+	 * @return GetLoanResponseDto
+	 * @see FundManagementRepository
+	 */
 	@Transactional(readOnly = true)
 	@Override
 	public GetLoanResponseDto getLoan(Long memberId, Long groupId) {
 		FundManagement fundManagement = fundManagementRepository.findByGroupId(groupId)
 			.orElseThrow(() -> new FundException(FundErrorInfo.NOT_FOUND_FUND_MANAGEMENT_BY_GROUP_ID));
-
 		return GetLoanResponseDto.from(fundManagement);
 	}
 }
