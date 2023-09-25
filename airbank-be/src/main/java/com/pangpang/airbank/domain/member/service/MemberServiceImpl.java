@@ -174,5 +174,4 @@ public class MemberServiceImpl implements MemberService {
 		member.setCreditScore(member.getCreditScore() + points);
 		creditHistoryService.saveCreditHistory(member);
 	}
-
 }
