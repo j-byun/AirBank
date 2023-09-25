@@ -11,6 +11,8 @@ import com.pangpang.airbank.domain.member.repository.MemberRepository;
 import com.pangpang.airbank.domain.savings.domain.Savings;
 import com.pangpang.airbank.domain.savings.domain.SavingsItem;
 import com.pangpang.airbank.domain.savings.dto.GetCurrentSavingsResponseDto;
+import com.pangpang.airbank.domain.savings.dto.PatchConfirmSavingsRequestDto;
+import com.pangpang.airbank.domain.savings.dto.PatchConfirmSavingsResponseDto;
 import com.pangpang.airbank.domain.savings.dto.PostSaveSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.repository.SavingsItemRepository;
 import com.pangpang.airbank.domain.savings.repository.SavingsRepository;
@@ -78,11 +80,42 @@ public class SavingsServiceImpl implements SavingsService {
 		Group group = groupRepository.findByChildId(member.getId())
 			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_CHILD_ID));
 
+		if (savingsRepository.existsByGroupIdAndStatusEquals(group.getId(), SavingsStatus.PENDING)) {
+			throw new SavingsException(SavingsErrorInfo.ALREADY_SAVINGS_IN_PENDING);
+		}
+
+		if (savingsRepository.existsByGroupIdAndStatusEquals(group.getId(), SavingsStatus.PROCEEDING)) {
+			throw new SavingsException(SavingsErrorInfo.ALREADY_SAVINGS_IN_PROCEEDING);
+		}
+
 		Savings savings = Savings.of(group, postSaveSavingsRequestDto);
 		SavingsItem savingsItem = SavingsItem.of(savings, postSaveSavingsRequestDto);
 
 		savingsRepository.save(savings);
 		savingsItemRepository.save(savingsItem);
 		return new CommonIdResponseDto(savings.getId());
+	}
+
+	/**
+	 *  티끌모으기 요청을 수락 또는 거절하는 메소드, 부모만 가능.
+	 * @param memberId Long
+	 * @param patchConfirmSavingsRequestDto PatchConfirmSavingsRequestDto
+	 * @param groupId Long
+	 * @return PatchConfirmSavingsResponseDto
+	 * @see SavingsRepository
+	 */
+	@Transactional
+	@Override
+	public PatchConfirmSavingsResponseDto confirmEnrollmentSavings(
+		Long memberId, PatchConfirmSavingsRequestDto patchConfirmSavingsRequestDto, Long groupId) {
+		if (!memberRepository.existsByIdAndRoleEquals(memberId, MemberRole.PARENT)) {
+			throw new SavingsException(SavingsErrorInfo.CONFIRM_SAVINGS_PERMISSION_DENIE);
+		}
+
+		Savings savings = savingsRepository.findByGroupIdAndStatusEquals(groupId, SavingsStatus.PENDING)
+			.orElseThrow(() -> new SavingsException(SavingsErrorInfo.NOT_FOUND_SAVINGS_IN_PENDING));
+
+		savings.updateStatus(patchConfirmSavingsRequestDto);
+		return PatchConfirmSavingsResponseDto.from(savings);
 	}
 }

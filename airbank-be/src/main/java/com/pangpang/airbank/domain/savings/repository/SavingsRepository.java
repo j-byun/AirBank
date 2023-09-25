@@ -12,4 +12,8 @@ import com.pangpang.airbank.global.meta.domain.SavingsStatus;
 public interface SavingsRepository extends JpaRepository<Savings, Long> {
 
 	Optional<Savings> findByGroupIdAndStatusEquals(Long groupId, SavingsStatus status);
+
+	Boolean existsByStatusEquals(SavingsStatus status);
+
+	Boolean existsByGroupIdAndStatusEquals(Long id, SavingsStatus status);
 }

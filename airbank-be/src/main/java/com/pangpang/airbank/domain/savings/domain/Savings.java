@@ -6,6 +6,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import com.pangpang.airbank.domain.BaseTimeEntity;
 import com.pangpang.airbank.domain.group.domain.Group;
+import com.pangpang.airbank.domain.savings.dto.PatchConfirmSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.dto.PostSaveSavingsRequestDto;
 import com.pangpang.airbank.global.meta.converter.SavingsStatusConverter;
 import com.pangpang.airbank.global.meta.domain.SavingsStatus;
@@ -103,5 +104,13 @@ public class Savings extends BaseTimeEntity {
 			.month(month)
 			.group(group)
 			.build();
+	}
+
+	public void updateStatus(PatchConfirmSavingsRequestDto patchConfirmSavingsRequestDto) {
+		if (patchConfirmSavingsRequestDto.getIsAccept()) {
+			this.status = SavingsStatus.PROCEEDING;
+			return;
+		}
+		this.status = SavingsStatus.REJECT;
 	}
 }

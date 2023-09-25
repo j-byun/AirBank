@@ -3,6 +3,7 @@ package com.pangpang.airbank.domain.savings.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pangpang.airbank.domain.group.dto.CommonIdResponseDto;
 import com.pangpang.airbank.domain.savings.dto.GetCurrentSavingsResponseDto;
+import com.pangpang.airbank.domain.savings.dto.PatchConfirmSavingsRequestDto;
+import com.pangpang.airbank.domain.savings.dto.PatchConfirmSavingsResponseDto;
 import com.pangpang.airbank.domain.savings.dto.PostSaveSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.service.SavingsService;
 import com.pangpang.airbank.global.common.response.EnvelopeResponse;
@@ -64,6 +67,28 @@ public class SavingsController {
 			.body(EnvelopeResponse.<CommonIdResponseDto>builder()
 				.code(HttpStatus.CREATED.value())
 				.data(savingsService.saveSavings(member.getMemberId(), postSaveSavingsRequestDto))
+				.build());
+	}
+
+	/**
+	 *  티끌모으기 요청 수락/거절
+	 *
+	 * @param patchConfirmSavingsRequestDto PatchConfirmSavingsRequestDto
+	 * @param groupId Long
+	 * @return ResponseEntity<EnvelopeResponse < PatchConfirmSavingsResponseDto>>
+	 * @see SavingsService
+	 */
+	@PatchMapping("/confirm")
+	public ResponseEntity<EnvelopeResponse<PatchConfirmSavingsResponseDto>> confirmEnrollmentSavings(
+		@RequestBody PatchConfirmSavingsRequestDto patchConfirmSavingsRequestDto,
+		@RequestParam("group_id") Long groupId) {
+		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
+
+		return ResponseEntity.ok()
+			.body(EnvelopeResponse.<PatchConfirmSavingsResponseDto>builder()
+				.code(HttpStatus.OK.value())
+				.data(savingsService.confirmEnrollmentSavings(member.getMemberId(), patchConfirmSavingsRequestDto,
+					groupId))
 				.build());
 	}
 }
