@@ -28,5 +28,5 @@ public interface MemberService {
 
 	void updateCreditScoreByRate(Long memberId, Double rate);
 
-	GetCreditResponseDto getCredit(Long memberId);
+	GetCreditResponseDto getCreditRating(Long memberId, Long groupId);
 }

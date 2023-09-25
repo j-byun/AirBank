@@ -68,11 +68,11 @@ public class MemberController {
 	/**
 	 *  신용 등급 조회
 	 *
-	 * @param type the type to convert the string to
-	 * @return 리턴하는 값 설명
-	 * @see 추가로_보면_좋은_클래스
+	 * @param authenticatedMemberArgument AuthenticatedMemberArgument
+	 * @return 신용등급
+	 * @see CreditRating
 	 */
-	// @CheckGroup
+	@CheckGroup
 	@GetMapping("/credit")
 	public ResponseEntity<EnvelopeResponse<GetCreditResponseDto>> getCredit(
 		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
@@ -81,7 +81,7 @@ public class MemberController {
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<GetCreditResponseDto>builder()
 				.code(HttpStatus.OK.value())
-				.data(memberService.getCredit(authenticatedMemberArgument.getMemberId()))
+				.data(memberService.getCreditRating(authenticatedMemberArgument.getMemberId(), groupId))
 				.build());
 	}
 }
