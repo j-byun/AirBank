@@ -6,6 +6,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pangpang.airbank.domain.account.domain.Account;
+import com.pangpang.airbank.domain.account.dto.PostEnrollAccountRequestDto;
+import com.pangpang.airbank.domain.account.repository.AccountRepository;
+import com.pangpang.airbank.domain.account.service.AccountService;
 import com.pangpang.airbank.domain.fund.domain.FundManagement;
 import com.pangpang.airbank.domain.fund.repository.FundManagementRepository;
 import com.pangpang.airbank.domain.group.domain.Group;
@@ -18,9 +22,11 @@ import com.pangpang.airbank.domain.group.dto.PostEnrollChildRequestDto;
 import com.pangpang.airbank.domain.group.repository.GroupRepository;
 import com.pangpang.airbank.domain.member.domain.Member;
 import com.pangpang.airbank.domain.member.repository.MemberRepository;
+import com.pangpang.airbank.global.error.exception.AccountException;
 import com.pangpang.airbank.global.error.exception.FundException;
 import com.pangpang.airbank.global.error.exception.GroupException;
 import com.pangpang.airbank.global.error.exception.MemberException;
+import com.pangpang.airbank.global.error.info.AccountErrorInfo;
 import com.pangpang.airbank.global.error.info.FundErrorInfo;
 import com.pangpang.airbank.global.error.info.GroupErrorInfo;
 import com.pangpang.airbank.global.error.info.MemberErrorInfo;
@@ -36,6 +42,8 @@ public class GroupServiceImpl implements GroupService {
 	private final GroupRepository groupRepository;
 	private final MemberRepository memberRepository;
 	private final FundManagementRepository fundManagementRepository;
+	private final AccountService accountService;
+	private final AccountRepository accountRepository;
 
 	/**
 	 *  로그인 사용자의 현재 그룹에 있는 멤버를 조회하는 메소드
@@ -121,6 +129,11 @@ public class GroupServiceImpl implements GroupService {
 
 		if (patchConfirmChildRequestDto.getIsAccept()) {
 			group.setActivated(true);
+
+			// Loan 계좌 생성
+			Account account = accountRepository.findFirstByMemberIsNull()
+				.orElseThrow(() -> new AccountException(AccountErrorInfo.NOT_FOUND_AVAILABLE_ACCOUNT));
+			accountService.saveAccount(PostEnrollAccountRequestDto.fromGroup(account.getAccountNumber()), memberId);
 			return new CommonIdResponseDto(group.getId());
 		}
 
