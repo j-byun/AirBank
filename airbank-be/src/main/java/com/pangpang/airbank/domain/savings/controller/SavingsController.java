@@ -93,6 +93,13 @@ public class SavingsController {
 				.build());
 	}
 
+	/**
+	 *  티끌모으기 포기
+	 *
+	 * @param patchCancelSavingsRequestDto PatchCancelSavingsRequestDto
+	 * @return ResponseEntity<EnvelopeResponse < PatchCommonSavingsResponseDto>>
+	 * @see SavingsService
+	 */
 	@PatchMapping("/cancel")
 	public ResponseEntity<EnvelopeResponse<PatchCommonSavingsResponseDto>> cancelSavings(
 		@RequestBody PatchCancelSavingsRequestDto patchCancelSavingsRequestDto) {

@@ -120,6 +120,15 @@ public class SavingsServiceImpl implements SavingsService {
 		return PatchCommonSavingsResponseDto.from(savings);
 	}
 
+	/**
+	 *  진행중인 티끌모으기를 포기하는 메소드
+	 *
+	 * @param memberId Long
+	 * @param patchCancelSavingsRequestDto PatchCancelSavingsRequestDto
+	 * @return PatchCommonSavingsResponseDto
+	 * @see MemberRepository
+	 * @see SavingsRepository
+	 */
 	@Transactional
 	@Override
 	public PatchCommonSavingsResponseDto cancelSavings(Long memberId,
