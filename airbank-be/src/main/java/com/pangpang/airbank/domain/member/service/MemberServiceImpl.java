@@ -66,6 +66,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public GetLoginMemberResponseDto saveMember(PostLoginRequestDto postLoginRequestDto) {
 		Member member = memberRepository.save(Member.from(postLoginRequestDto));
+		creditHistoryService.saveCreditHistory(member);
 		return GetLoginMemberResponseDto.from(member);
 	}
 
