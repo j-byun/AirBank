@@ -6,10 +6,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pangpang.airbank.domain.account.dto.PostEnrollAccountRequestDto;
+import com.pangpang.airbank.domain.account.dto.WithdrawalTransferRequestDto;
 import com.pangpang.airbank.global.common.api.nh.dto.GetCheckFinAccountRequestDto;
 import com.pangpang.airbank.global.common.api.nh.dto.GetCheckFinAccountResponseDto;
 import com.pangpang.airbank.global.common.api.nh.dto.GetFinAccountRequestDto;
 import com.pangpang.airbank.global.common.api.nh.dto.GetFinAccountResponseDto;
+import com.pangpang.airbank.global.common.api.nh.dto.PostWithdrawalTransferRequestDto;
+import com.pangpang.airbank.global.common.api.nh.dto.PostWithdrawalTransferResponseDto;
 import com.pangpang.airbank.global.common.api.nh.service.NhApiManagementService;
 
 import lombok.RequiredArgsConstructor;
@@ -70,5 +73,28 @@ public class NHApi {
 			.bodyToMono(String.class)
 			.block();
 		return objectMapper.readValue(result, GetCheckFinAccountResponseDto.class);
+	}
+
+	/**
+	 * 출금이체
+	 *
+	 * @param withdrawalTransferRequestDto
+	 * @return PostWithdrawalTransferResponseDto
+	 * @see WithdrawalTransferRequestDto
+	 * @see PostWithdrawalTransferRequestDto
+	 */
+	public PostWithdrawalTransferResponseDto withdrawalTransfer(
+		WithdrawalTransferRequestDto withdrawalTransferRequestDto) throws JsonProcessingException {
+		String result = WebClient.create()
+			.post()
+			.uri(nhApiConstantProvider.getUrl() + "/DrawingTransfer.nh")
+			.header("Content-type", "application/json;charset=utf-8")
+			.bodyValue(
+				objectMapper.writeValueAsString(PostWithdrawalTransferRequestDto.of(nhApiConstantProvider,
+					nhApiManagementService.updateIsTuno(), withdrawalTransferRequestDto)))
+			.retrieve()
+			.bodyToMono(String.class)
+			.block();
+		return objectMapper.readValue(result, PostWithdrawalTransferResponseDto.class);
 	}
 }
