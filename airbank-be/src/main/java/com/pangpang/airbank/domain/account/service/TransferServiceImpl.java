@@ -31,13 +31,11 @@ public class TransferServiceImpl implements TransferService {
 	@Override
 	@Transactional
 	public void transfer(TransferRequestDto transferRequestDto) {
-
 		withdraw(transferRequestDto);
 		deposit(transferRequestDto);
 	}
 
 	private void withdraw(TransferRequestDto transferRequestDto) {
-
 		UUID transactionIdentifier = accountHistoryService.saveWithdrawalHistory(
 			SaveWithdrawalHistoryRequestDto.from(transferRequestDto));
 
