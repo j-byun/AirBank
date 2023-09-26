@@ -4,10 +4,8 @@ import com.pangpang.airbank.global.meta.domain.BankCode;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
 public class PostEnrollAccountRequestDto {
 	private String bankCode;

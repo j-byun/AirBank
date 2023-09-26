@@ -87,13 +87,6 @@ public class AccountServiceImpl implements AccountService {
 			throw new AccountException(AccountErrorInfo.ACCOUNT_NH_SERVER_ERROR);
 		}
 
-		if (getFinAccountResponseDto.getRgno() == null) {
-			if (!getFinAccountResponseDto.getHeader().getRsms().contains("정상")) {
-				throw new AccountException(AccountErrorInfo.ACCOUNT_ENROLL_ERROR);
-			}
-			throw new AccountException(AccountErrorInfo.ACCOUNT_NH_SERVER_ERROR);
-		}
-
 		// 핀-어카운트 발급 확인
 		GetCheckFinAccountResponseDto getCheckFinAccountResponseDto;
 		try {
@@ -101,10 +94,6 @@ public class AccountServiceImpl implements AccountService {
 				getFinAccountResponseDto.getRgno());
 		} catch (Exception e) {
 			throw new AccountException(AccountErrorInfo.ACCOUNT_NH_SERVER_ERROR);
-		}
-
-		if (getCheckFinAccountResponseDto.getFinAcno() == null) {
-			throw new AccountException(AccountErrorInfo.ACCOUNT_ENROLL_ERROR);
 		}
 		account.addFinAccount(getCheckFinAccountResponseDto.getFinAcno());
 	}
