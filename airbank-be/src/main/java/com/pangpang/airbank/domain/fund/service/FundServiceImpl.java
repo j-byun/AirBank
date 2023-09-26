@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pangpang.airbank.domain.fund.domain.Interest;
 import com.pangpang.airbank.domain.account.domain.Account;
 import com.pangpang.airbank.domain.account.dto.TransferRequestDto;
+import com.pangpang.airbank.domain.account.dto.TransferResponseDto;
 import com.pangpang.airbank.domain.account.repository.AccountRepository;
 import com.pangpang.airbank.domain.account.service.TransferService;
 import com.pangpang.airbank.domain.fund.domain.Tax;
@@ -104,10 +105,10 @@ public class FundServiceImpl implements FundService {
 		Account receiverAccount = accountRepository.findByMemberIdAndType(childId, AccountType.MAIN_ACCOUNT)
 			.orElseThrow(() -> new AccountException(AccountErrorInfo.NOT_FOUND_ACCOUNT));
 
-		transferService.transfer(
+		TransferResponseDto transferResponseDto = transferService.transfer(
 			TransferRequestDto.of(senderAccount, receiverAccount, postTransferBonusRequestDto.getAmount(),
 				TransactionType.BONUS));
 
-		return null;
+		return PostTransferBonusResponseDto.from(transferResponseDto);
 	}
 }

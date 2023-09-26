@@ -89,8 +89,8 @@ public class FundController {
 	@CheckGroup
 	@PostMapping("/bonus")
 	public ResponseEntity<EnvelopeResponse<PostTransferBonusResponseDto>> transferBonus(
-		@RequestBody PostTransferBonusRequestDto postTransferBonusRequestDto,
 		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
+		@RequestBody PostTransferBonusRequestDto postTransferBonusRequestDto,
 		@RequestParam("group_id") Long groupId) {
 
 		return ResponseEntity.status(HttpStatus.OK)
