@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pangpang.airbank.domain.account.domain.Account;
 import com.pangpang.airbank.domain.account.dto.TransferRequestDto;
+import com.pangpang.airbank.domain.account.dto.TransferResponseDto;
 import com.pangpang.airbank.domain.account.repository.AccountRepository;
 import com.pangpang.airbank.domain.account.service.TransferService;
 import com.pangpang.airbank.domain.fund.domain.FundManagement;
@@ -96,9 +97,9 @@ public class LoanServiceImpl implements LoanService {
 		// 땡겨쓰기 출금
 		TransferRequestDto transferRequestDto = TransferRequestDto.of(loanAccount, mainAccount,
 			postWithdrawLoanRequestDto.getAmount(), TransactionType.LOAN);
-		transferService.transfer(transferRequestDto);
-		fundManagement.plusLoanAmount(postWithdrawLoanRequestDto.getAmount());
+		TransferResponseDto response = transferService.transfer(transferRequestDto);
+		fundManagement.plusLoanAmount(response.getAmount());
 
-		return PostWithdrawLoanResponseDto.from(postWithdrawLoanRequestDto.getAmount());
+		return PostWithdrawLoanResponseDto.from(response.getAmount());
 	}
 }
