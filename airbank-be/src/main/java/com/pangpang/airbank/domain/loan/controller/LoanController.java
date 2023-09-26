@@ -3,11 +3,15 @@ package com.pangpang.airbank.domain.loan.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pangpang.airbank.domain.loan.dto.GetLoanResponseDto;
+import com.pangpang.airbank.domain.loan.dto.PostWithdrawLoanRequestDto;
+import com.pangpang.airbank.domain.loan.dto.PostWithdrawLoanResponseDto;
 import com.pangpang.airbank.domain.loan.service.LoanService;
 import com.pangpang.airbank.global.common.response.EnvelopeResponse;
 import com.pangpang.airbank.global.resolver.dto.AuthenticatedMemberArgument;
@@ -54,6 +58,18 @@ public class LoanController {
 			.body(EnvelopeResponse.<GetLoanResponseDto>builder()
 				.code(HttpStatus.OK.value())
 				.data(loanService.getLoan(member.getMemberId(), groupId))
+				.build());
+	}
+
+	@PostMapping()
+	public ResponseEntity<EnvelopeResponse<PostWithdrawLoanResponseDto>> withdrawLoan(
+		@RequestBody PostWithdrawLoanRequestDto postWithdrawLoanRequestDto) {
+		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(2L);
+
+		return ResponseEntity.ok()
+			.body(EnvelopeResponse.<PostWithdrawLoanResponseDto>builder()
+				.code(HttpStatus.OK.value())
+				.data(loanService.withdrawLoan(member.getMemberId(), postWithdrawLoanRequestDto))
 				.build());
 	}
 }

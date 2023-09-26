@@ -90,7 +90,7 @@ public class GroupServiceImpl implements GroupService {
 		Member childMember = memberRepository.findByChildPhoneNumber(postEnrollChildRequestDto.getPhoneNumber())
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_CHILD_MEMBER_BY_PHONE_NUMBER));
 
-		groupRepository.findByChildIdAndActivatedTrue(childMember.getId()).ifPresent((group) -> {
+		groupRepository.findByChild(childMember).ifPresent((group) -> {
 			if (group.getActivated()) {
 				throw new GroupException(GroupErrorInfo.ALREADY_HAD_PARENT);
 			}
@@ -122,7 +122,7 @@ public class GroupServiceImpl implements GroupService {
 		}
 
 		Group group = groupRepository.findByIdAndChildIdAndActivatedFalse(groupId, memberId)
-			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_CHILD_ID));
+			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_CHILD));
 
 		if (patchConfirmChildRequestDto.getIsAccept()) {
 			group.setActivated(true);
@@ -203,7 +203,7 @@ public class GroupServiceImpl implements GroupService {
 			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_PARENT_ID));
 
 		FundManagement fundManagement = fundManagementRepository.findByGroupId(group.getId())
-			.orElseThrow(() -> new FundException(FundErrorInfo.NOT_FOUND_FUND_MANAGEMENT_BY_GROUP_ID));
+			.orElseThrow(() -> new FundException(FundErrorInfo.NOT_FOUND_FUND_MANAGEMENT_BY_GROUP));
 
 		fundManagement.updateFundManagement(commonFundManagementRequestDto);
 		return PatchFundManagementResponseDto.from(commonFundManagementRequestDto);

@@ -73,7 +73,7 @@ public class SavingsServiceImpl implements SavingsService {
 		}
 
 		Group group = groupRepository.findByChildIdAndActivatedTrue(memberId)
-			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_CHILD_ID));
+			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_CHILD));
 
 		if (savingsRepository.existsByGroupIdAndStatusEquals(group.getId(), SavingsStatus.PENDING)) {
 			throw new SavingsException(SavingsErrorInfo.ALREADY_SAVINGS_IN_PENDING);
