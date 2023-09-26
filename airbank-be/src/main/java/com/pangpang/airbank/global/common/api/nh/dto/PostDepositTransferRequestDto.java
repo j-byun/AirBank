@@ -2,7 +2,7 @@ package com.pangpang.airbank.global.common.api.nh.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.pangpang.airbank.domain.account.dto.WithdrawalTransferRequestDto;
+import com.pangpang.airbank.domain.account.dto.DepositTransferRequestDto;
 import com.pangpang.airbank.global.common.api.nh.NHApiConstantProvider;
 
 import lombok.AllArgsConstructor;
@@ -15,24 +15,26 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @JsonNaming(value = PropertyNamingStrategy.PascalCaseStrategy.class)
-public class PostWithdrawalTransferRequestDto {
+public class PostDepositTransferRequestDto {
 	private CommonHeaderDto header;
-	private String finAcno;
+	private String bncd;
+	private String acno;
 	private String tram;
-	private String dractOtlt;
+	private String mractOtlt;
 
-	public static PostWithdrawalTransferRequestDto of(NHApiConstantProvider nhApiConstantProvider, Long isTuno,
-		WithdrawalTransferRequestDto withdrawalTransferRequestDto) {
-		return PostWithdrawalTransferRequestDto.builder()
+	public static PostDepositTransferRequestDto of(NHApiConstantProvider nhApiConstantProvider, Long isTuno,
+		DepositTransferRequestDto depositTransferRequestDto) {
+		return PostDepositTransferRequestDto.builder()
 			.header(
 				CommonHeaderDto.of(nhApiConstantProvider, isTuno).toBuilder()
-					.apiNm("DrawingTransfer")
-					.apiSvcCd("DrawingTransferA")
+					.apiNm("ReceivedTransferAccountNumber")
+					.apiSvcCd("ReceivedTransferA")
 					.build()
 			)
-			.finAcno(withdrawalTransferRequestDto.getFinAcn())
-			.tram(withdrawalTransferRequestDto.getTram())
-			.dractOtlt(withdrawalTransferRequestDto.getDractOtlt())
+			.bncd(depositTransferRequestDto.getBnod())
+			.acno(depositTransferRequestDto.getAcno())
+			.tram(depositTransferRequestDto.getTram())
+			.mractOtlt(depositTransferRequestDto.getMractOtlt())
 			.build();
 	}
 }
