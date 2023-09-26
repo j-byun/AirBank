@@ -88,7 +88,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 
 		if (getFinAccountResponseDto.getRgno() == null) {
-			if (getFinAccountResponseDto.getHeader().getRsms().contains("이미 등록된")) {
+			if (!getFinAccountResponseDto.getHeader().getRsms().contains("정상")) {
 				throw new AccountException(AccountErrorInfo.ACCOUNT_ENROLL_ERROR);
 			}
 			throw new AccountException(AccountErrorInfo.ACCOUNT_NH_SERVER_ERROR);
