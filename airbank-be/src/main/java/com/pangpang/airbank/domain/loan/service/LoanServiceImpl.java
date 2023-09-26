@@ -62,6 +62,19 @@ public class LoanServiceImpl implements LoanService {
 		return GetLoanResponseDto.from(fundManagement);
 	}
 
+	/**
+	 *  땡겨쓰기 가상계좌에서 자녀 계좌로 입금하는 메소드
+	 *
+	 * @param memberId Long
+	 * @param postWithdrawLoanRequestDto PostWithdrawLoanRequestDto
+	 * @return PostWithdrawLoanResponseDto
+	 * @see MemberRepository
+	 * @see LoanConstantProvider
+	 * @see AccountRepository
+	 * @see GroupRepository
+	 * @see FundManagementRepository
+	 * @see TransferService
+	 */
 	@Transactional
 	@Override
 	public PostWithdrawLoanResponseDto withdrawLoan(Long memberId,

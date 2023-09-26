@@ -61,6 +61,25 @@ public class LoanController {
 				.build());
 	}
 
+	/**
+	 *  땡겨쓰기 땡기기
+	 *
+	 * @param postWithdrawLoanRequestDto PostWithdrawLoanRequestDto
+	 * @return ResponseEntity<EnvelopeResponse < PostWithdrawLoanResponseDto>>
+	 * @see LoanService
+	 */
+	@Operation(summary = "땡겨쓰기 땡기기", description = "땡겨쓰기 가상계좌에서 자녀 계좌로 입금하는 API")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "땡겨쓰기 땡기기 성공",
+			content = @Content(schema = @Schema(implementation = GetLoanResponseDto.class))),
+		@ApiResponse(responseCode = "1500", description = "사용자를 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1401", description = "신용등급이 낮습니다.", content = @Content),
+		@ApiResponse(responseCode = "1400", description = "땡겨쓰기는 자녀만 사용할 수 있습니다.", content = @Content),
+		@ApiResponse(responseCode = "1006", description = "등록된 땡겨쓰기 계좌가 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1303", description = "등록중인 그룹이 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1200", description = "자금 관리를 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1402", description = "땡겨쓰기 계좌 잔액이 부족합니다.", content = @Content),
+	})
 	@PostMapping()
 	public ResponseEntity<EnvelopeResponse<PostWithdrawLoanResponseDto>> withdrawLoan(
 		@RequestBody PostWithdrawLoanRequestDto postWithdrawLoanRequestDto) {
