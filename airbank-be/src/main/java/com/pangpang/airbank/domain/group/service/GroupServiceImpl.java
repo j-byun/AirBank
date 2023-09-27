@@ -26,6 +26,7 @@ import com.pangpang.airbank.global.error.exception.MemberException;
 import com.pangpang.airbank.global.error.info.FundErrorInfo;
 import com.pangpang.airbank.global.error.info.GroupErrorInfo;
 import com.pangpang.airbank.global.error.info.MemberErrorInfo;
+import com.pangpang.airbank.global.meta.domain.AccountType;
 import com.pangpang.airbank.global.meta.domain.MemberRole;
 
 import lombok.RequiredArgsConstructor;
@@ -111,6 +112,7 @@ public class GroupServiceImpl implements GroupService {
 	 * @return CommonIdResponseDto
 	 * @see MemberRepository
 	 * @see GroupRepository
+	 * @see AccountService
 	 */
 	@Transactional
 	@Override
@@ -127,9 +129,8 @@ public class GroupServiceImpl implements GroupService {
 		if (patchConfirmChildRequestDto.getIsAccept()) {
 			group.setActivated(true);
 
-			// Loan 계좌 생성
-
-			accountService.saveLoanAccount(memberId);
+			// Loan 가상 계좌 생성
+			accountService.saveVirtualAccount(memberId, AccountType.LOAN_ACCOUNT);
 			return CommonIdResponseDto.from(group.getId());
 		}
 
