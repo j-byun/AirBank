@@ -20,5 +20,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
 	Boolean existsByIdAndRoleEquals(Long id, MemberRole role);
 
-	Optional<Member> findByPhoneNumber(String phoneNumber);
+	Boolean existsByPhoneNumber(String phoneNumber);
 }

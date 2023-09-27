@@ -127,9 +127,7 @@ public class MemberServiceImpl implements MemberService {
 	 * @return 이미 가입된 휴대폰 번호일 경우 예외 발생
 	 */
 	private void isDuplicatePhoneNumber(String phoneNumber) {
-		Optional<Member> optionalMember = memberRepository.findByPhoneNumber(phoneNumber);
-
-		if (optionalMember.isPresent()) {
+		if (memberRepository.existsByPhoneNumber(phoneNumber)) {
 			throw new MemberException(MemberErrorInfo.DUPLICATE_PHONENUMBER);
 		}
 	}
