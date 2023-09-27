@@ -154,15 +154,12 @@ public class GroupServiceImpl implements GroupService {
 	public CommonIdResponseDto saveFundManagement(Long memberId,
 		CommonFundManagementRequestDto commonFundManagementRequestDto, Long groupId) {
 
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
-
-		if (!member.getRole().getName().equals(MemberRole.PARENT.getName())) {
+		if (!memberRepository.existsByIdAndRoleEquals(memberId, MemberRole.PARENT)) {
 			throw new FundException(FundErrorInfo.UPDATE_FUND_MANAGEMENT_PERMISSION_DENIED);
+
 		}
 
-		Group group = groupRepository.findByIdAndParentId(groupId,
-				member.getId())
+		Group group = groupRepository.findByIdAndParentId(groupId, memberId)
 			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_PARENT_ID));
 
 		if (fundManagementRepository.existsByGroupId(group.getId())) {
@@ -190,17 +187,11 @@ public class GroupServiceImpl implements GroupService {
 	public PatchFundManagementResponseDto updateFundManagement(Long memberId,
 		CommonFundManagementRequestDto commonFundManagementRequestDto, Long groupId) {
 
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
-
-		if (!member.getRole().getName().equals(MemberRole.PARENT.getName())) {
+		if (!memberRepository.existsByIdAndRoleEquals(memberId, MemberRole.PARENT)) {
 			throw new FundException(FundErrorInfo.UPDATE_FUND_MANAGEMENT_PERMISSION_DENIED);
 		}
 
-		log.info(String.valueOf(groupId));
-		log.info(String.valueOf(member.getId()));
-		Group group = groupRepository.findByIdAndParentId(groupId,
-				member.getId())
+		Group group = groupRepository.findByIdAndParentId(groupId, memberId)
 			.orElseThrow(() -> new GroupException(GroupErrorInfo.NOT_FOUND_GROUP_BY_PARENT_ID));
 
 		FundManagement fundManagement = fundManagementRepository.findByGroupId(group.getId())
