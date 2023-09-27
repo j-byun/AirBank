@@ -111,12 +111,27 @@ public class MemberServiceImpl implements MemberService {
 			member.setName(patchMemberRequestDto.getName());
 		}
 		if (patchMemberRequestDto.getPhoneNumber() != null) {
+			isDuplicatePhoneNumber(patchMemberRequestDto.getPhoneNumber());
 			member.setPhoneNumber(patchMemberRequestDto.getPhoneNumber());
 		}
 		if (patchMemberRequestDto.getRole() != null) {
 			member.setRole(patchMemberRequestDto.getRole());
 		}
 		return PatchMemberResponseDto.from(member);
+	}
+
+	/**
+	 *  휴대폰 번호 중복 확인
+	 *
+	 * @param phoneNumber String
+	 * @return 이미 가입된 휴대폰 번호일 경우 예외 발생
+	 */
+	private void isDuplicatePhoneNumber(String phoneNumber) {
+		Optional<Member> optionalMember = memberRepository.findByPhoneNumber(phoneNumber);
+
+		if (optionalMember.isPresent()) {
+			throw new MemberException(MemberErrorInfo.DUPLICATE_PHONENUMBER);
+		}
 	}
 
 	/**
