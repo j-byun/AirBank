@@ -196,6 +196,13 @@ public class FundController {
 	 * @return ResponseEntity<EnvelopeResponse < GetConfiscationResponseDto>>
 	 * @see FundService
 	 */
+	@Operation(summary = "현재 압류 현황 조회", description = "사용자의 압류 현황을 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "압류 현황 조회 성공",
+			content = @Content(schema = @Schema(implementation = GetConfiscationResponseDto.class))),
+		@ApiResponse(responseCode = "1100", description = "인증이 유효하지 않습니다.", content = @Content),
+		@ApiResponse(responseCode = "1306", description = "사용자가 해당 그룹에 속해있지 않습니다.", content = @Content),
+	})
 	@CheckGroup
 	@GetMapping("/confiscation")
 	public ResponseEntity<EnvelopeResponse<GetConfiscationResponseDto>> getConfiscation(
