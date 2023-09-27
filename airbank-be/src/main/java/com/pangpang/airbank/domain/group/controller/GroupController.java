@@ -65,6 +65,7 @@ public class GroupController {
 	/**
 	 *  자녀 등록
 	 *
+	 * @param authenticatedMemberArgument AuthenticatedMemberArgument
 	 * @param postEnrollChildRequestDto PostEnrollChildRequestDto
 	 * @return ResponseEntity<EnvelopeResponse < CommonIdResponseDto>>
 	 * @see GroupService
@@ -95,6 +96,7 @@ public class GroupController {
 	/**
 	 *  자녀 등록 수락/거절
 	 *
+	 * @param authenticatedMemberArgument AuthenticatedMemberArgument
 	 * @param patchConfirmChildRequestDto PatchConfirmRequestDto
 	 * @param groupId Long
 	 * @return ResponseEntity<EnvelopeResponse < CommonIdResponseDto>>
@@ -125,6 +127,7 @@ public class GroupController {
 	/**
 	 *  자금 관리 생성
 	 *
+	 * @param authenticatedMemberArgument AuthenticatedMemberArgument
 	 * @param commonFundManagementRequestDto CommonFundManagementRequestDto
 	 * @param groupId Long
 	 * @return ResponseEntity<EnvelopeResponse < CommonIdResponseDto>>
@@ -156,6 +159,7 @@ public class GroupController {
 	/**
 	 *  자금 관리 수정
 	 *
+	 * @param authenticatedMemberArgument AuthenticatedMemberArgument
 	 * @param commonFundManagementRequestDto CommonFundManagementRequestDto
 	 * @param groupId Long
 	 * @return ResponseEntity<EnvelopeResponse < PatchFundManagementResponseDto>>
