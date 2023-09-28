@@ -230,6 +230,7 @@ public class FundController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "변제금 송금 성공",
 			content = @Content(schema = @Schema(implementation = PostTransferConfiscationResponseDto.class))),
+		@ApiResponse(responseCode = "1000", description = "NH API 서버와의 통신에 실패했습니다.", content = @Content),
 		@ApiResponse(responseCode = "1004", description = "등록된 계좌가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "1100", description = "인증이 유효하지 않습니다.", content = @Content),
 		@ApiResponse(responseCode = "1200", description = "자금 관리를 찾을 수 없습니다.", content = @Content),
