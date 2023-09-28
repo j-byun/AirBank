@@ -1,5 +1,8 @@
 package com.pangpang.airbank.domain.loan.service;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,7 +12,11 @@ import com.pangpang.airbank.domain.account.dto.TransferResponseDto;
 import com.pangpang.airbank.domain.account.repository.AccountRepository;
 import com.pangpang.airbank.domain.account.service.TransferService;
 import com.pangpang.airbank.domain.fund.domain.FundManagement;
+import com.pangpang.airbank.domain.fund.domain.Interest;
+import com.pangpang.airbank.domain.fund.dto.GetInterestResponseDto;
 import com.pangpang.airbank.domain.fund.repository.FundManagementRepository;
+import com.pangpang.airbank.domain.fund.repository.InterestRepository;
+import com.pangpang.airbank.domain.fund.service.FundService;
 import com.pangpang.airbank.domain.group.domain.Group;
 import com.pangpang.airbank.domain.group.repository.GroupRepository;
 import com.pangpang.airbank.domain.loan.dto.GetLoanResponseDto;
@@ -45,6 +52,8 @@ public class LoanServiceImpl implements LoanService {
 	private final TransferService transferService;
 	private final AccountRepository accountRepository;
 	private final GroupRepository groupRepository;
+	private final FundService fundService;
+	private final InterestRepository interestRepository;
 
 	/**
 	 *  땡겨쓰기(한도, 땡겨쓴 금액)를 조회하는 메소드, 부모와 자녀가 조회 가능하다.
@@ -105,6 +114,21 @@ public class LoanServiceImpl implements LoanService {
 
 		if (fundManagement.getLoanAmount() + postWithdrawLoanRequestDto.getAmount() > fundManagement.getLoanLimit()) {
 			throw new LoanException(LoanErrorInfo.LOAN_BALANCE_LIMIT_EXCEEDED);
+		}
+
+		// 이자 존재 확인
+		GetInterestResponseDto getInterestResponseDto = fundService.getInterest(memberId, group.getId());
+		if (getInterestResponseDto.getAmount() != 0 || getInterestResponseDto.getOverdueAmount() != 0) {
+			throw new LoanException(LoanErrorInfo.NOT_PAID_INTEREST);
+		}
+
+		// 이자 첫 Row 생성
+		Optional<Interest> oldInterest = interestRepository.findByGroupAndActivatedFalseAndBilledAtGreaterThan(
+			group, LocalDate.now());
+
+		if (oldInterest.isEmpty()) {
+			Interest interest = Interest.of(group);
+			interestRepository.save(interest);
 		}
 
 		// 땡겨쓰기 출금
