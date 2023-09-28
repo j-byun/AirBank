@@ -23,7 +23,7 @@ public interface MemberService {
 
 	Boolean isValidMember(Long memberId);
 
-	void updateCreditScore(Long memberId, Integer points);
+	void updateCreditScoreByPoints(Long memberId, Integer points);
 
 	void updateCreditScoreByRate(Long memberId, Double rate);
 

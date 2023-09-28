@@ -130,9 +130,9 @@ public class MemberController {
 	@PostMapping("/credit")
 	public ResponseEntity<EnvelopeResponse<Void>> updateCreditScore(
 		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
-		@RequestParam("rate") Double rate) {
+		@RequestParam("points") Integer points) {
 
-		memberService.updateCreditScoreByRate(authenticatedMemberArgument.getMemberId(), rate);
+		memberService.updateCreditScoreByPoints(authenticatedMemberArgument.getMemberId(), points);
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<Void>builder()
 				.code(HttpStatus.OK.value())

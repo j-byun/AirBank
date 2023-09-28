@@ -166,18 +166,22 @@ public class MemberServiceImpl implements MemberService {
 	 * @return void
 	 */
 	@Override
-	public void updateCreditScore(Long memberId, Integer points) {
+	public void updateCreditScoreByPoints(Long memberId, Integer points) {
+		if (points == 0) {
+			throw new MemberException(MemberErrorInfo.NOT_FOUND_UPDATE_CREDIT_POINTS);
+		}
+
 		Member member = getMemberByIdOrElseThrowException(memberId);
-		Integer newCreditScore = member.getCreditScore() + points;
 
-		if (newCreditScore > CreditRating.ONE.getMaxScore()) {
-			newCreditScore = CreditRating.ONE.getMaxScore();
+		if (member.getCreditScore().equals(CreditRating.ONE.getMaxScore()) && (points > 0)) {
+			throw new MemberException(MemberErrorInfo.ALREADY_MAX_CREDIT_SCORE);
 		}
-		if (newCreditScore < CreditRating.TEN.getMinScore()) {
-			newCreditScore = CreditRating.TEN.getMinScore();
+		if (member.getCreditScore().equals(CreditRating.TEN.getMinScore()) && (points < 0)) {
+			throw new MemberException(MemberErrorInfo.ALREADY_MIN_CREDIT_SCORE);
 		}
 
-		member.setCreditScore(newCreditScore);
+		member.updateCreditScore(points);
+
 		creditHistoryService.saveCreditHistory(member);
 	}
 
@@ -190,19 +194,26 @@ public class MemberServiceImpl implements MemberService {
 	 */
 	@Override
 	public void updateCreditScoreByRate(Long memberId, Double rate) {
+		if (Double.compare(rate, 0D) == 0) {
+			throw new MemberException(MemberErrorInfo.NOT_FOUND_UPDATE_CREDIT_RATE);
+		}
+
 		Member member = getMemberByIdOrElseThrowException(memberId);
+
+		if (member.getCreditScore().equals(CreditRating.ONE.getMaxScore()) && (Double.compare(rate, 0D) > 0)) {
+			throw new MemberException(MemberErrorInfo.ALREADY_MAX_CREDIT_SCORE);
+		}
+		if (member.getCreditScore().equals(CreditRating.TEN.getMinScore()) && (Double.compare(rate, 0D) < 0)) {
+			throw new MemberException(MemberErrorInfo.ALREADY_MIN_CREDIT_SCORE);
+		}
+
 		CreditRating creditRating = CreditRating.getCreditRating(member.getCreditScore());
+
 		Integer points = Integer.valueOf(
 			(int)Math.round((creditRating.getMaxScore() - creditRating.getMinScore()) * rate));
-		Integer newCreditScore = member.getCreditScore() + points;
 
-		if (newCreditScore > CreditRating.ONE.getMaxScore()) {
-			newCreditScore = CreditRating.ONE.getMaxScore();
-		}
-		if (newCreditScore < CreditRating.TEN.getMinScore()) {
-			newCreditScore = CreditRating.TEN.getMinScore();
-		}
-		member.setCreditScore(newCreditScore);
+		member.updateCreditScore(points);
+
 		creditHistoryService.saveCreditHistory(member);
 	}
 
