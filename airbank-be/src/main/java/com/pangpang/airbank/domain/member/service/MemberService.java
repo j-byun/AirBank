@@ -23,9 +23,9 @@ public interface MemberService {
 
 	Boolean isValidMember(Long memberId);
 
-	void updateCreditScoreByPoints(Long memberId, Integer points);
+	void updateCreditScoreByPoints(Long childId, Long groupId, Integer points);
 
-	void updateCreditScoreByRate(Long memberId, Double rate);
+	void updateCreditScoreByRate(Long childId, Long groupId, Double rate);
 
 	GetCreditResponseDto getCreditRating(Long memberId, Long groupId);
 
