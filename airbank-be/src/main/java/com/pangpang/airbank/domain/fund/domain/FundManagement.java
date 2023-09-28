@@ -80,9 +80,9 @@ public class FundManagement {
 		this.loanAmount += loanAmount;
 	}
 
-	public void resetLoanLimitAndLoanAmount() {
-		this.loanLimit = 0L;
-		this.loanAmount = 0L;
+	public void resetLoanLimitAndLoanAmount(Long loanLimit, Long loanAmount) {
+		this.loanLimit = loanLimit;
+		this.loanAmount = loanAmount;
 	}
 
 	public static FundManagement of(Group group,

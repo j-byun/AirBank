@@ -328,11 +328,13 @@ public class FundServiceImpl implements FundService {
 		if (confiscation.getAmount().equals(confiscation.getRepaidAmount())) {
 			confiscation.updateActivated(false);
 
-			// 땡겨쓰기 제한 금액 및 땡겨쓴 금액 0원으로 초기화
+			// 땡겨쓰기 제한 금액 및 땡겨쓴 금액 재설정
 			FundManagement fundManagement = fundManagementRepository.findByGroup(group)
 				.orElseThrow(() -> new FundException(FundErrorInfo.NOT_FOUND_FUND_MANAGEMENT_BY_GROUP));
 
-			fundManagement.resetLoanLimitAndLoanAmount();
+			Long newLoanLimit = fundManagement.getLoanLimit() - fundManagement.getLoanAmount();
+
+			fundManagement.resetLoanLimitAndLoanAmount(newLoanLimit, 0L);
 
 			// 이자 납부 처리
 			List<Interest> interestList = interestRepository.findAllByGroupAndActivatedFalseAndBilledAtLessThanEqual(
