@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pangpang.airbank.domain.account.domain.Account;
@@ -357,7 +358,7 @@ public class FundServiceImpl implements FundService {
 	 * @see FundManagementRepository
 	 * @see GroupRepository
 	 */
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void confiscateLoan(Long childId, Long groupId) {
 		FundManagement fundManagement = fundManagementRepository.findByGroupId(groupId)
