@@ -357,6 +357,7 @@ public class FundServiceImpl implements FundService {
 	 * @see FundManagementRepository
 	 * @see GroupRepository
 	 */
+	@Transactional
 	@Override
 	public void confiscateLoan(Long childId, Long groupId) {
 		FundManagement fundManagement = fundManagementRepository.findByGroupId(groupId)
