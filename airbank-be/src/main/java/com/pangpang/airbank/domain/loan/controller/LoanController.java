@@ -10,11 +10,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pangpang.airbank.domain.loan.dto.GetLoanResponseDto;
+<<<<<<< HEAD
 import com.pangpang.airbank.domain.loan.dto.PostCommonLoanRequestDto;
 import com.pangpang.airbank.domain.loan.dto.PostRepaidLoanResponseDto;
 import com.pangpang.airbank.domain.loan.dto.PostWithdrawLoanResponseDto;
+=======
+import com.pangpang.airbank.domain.loan.dto.PostWithdrawLoanRequestDto;
+>>>>>>> a437bc3 (fix: amount를 받는 공통 responseDto로 수정)
 import com.pangpang.airbank.domain.loan.service.LoanService;
 import com.pangpang.airbank.global.aop.CheckGroup;
+import com.pangpang.airbank.global.common.response.CommonAmountResponseDto;
 import com.pangpang.airbank.global.common.response.EnvelopeResponse;
 import com.pangpang.airbank.global.resolver.Authentication;
 import com.pangpang.airbank.global.resolver.dto.AuthenticatedMemberArgument;
@@ -71,13 +76,13 @@ public class LoanController {
 	 *
 	 * @param authenticatedMemberArgument AuthenticatedMemberArgument
 	 * @param postWithdrawLoanRequestDto PostWithdrawLoanRequestDto
-	 * @return ResponseEntity<EnvelopeResponse < PostWithdrawLoanResponseDto>>
+	 * @return ResponseEntity<EnvelopeResponse <CommonAmountResponseDto>>
 	 * @see LoanService
 	 */
 	@Operation(summary = "땡겨쓰기 땡기기", description = "땡겨쓰기 가상계좌에서 자녀 계좌로 입금하는 API")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "땡겨쓰기 땡기기 성공",
-			content = @Content(schema = @Schema(implementation = PostWithdrawLoanResponseDto.class))),
+			content = @Content(schema = @Schema(implementation = CommonAmountResponseDto.class))),
 		@ApiResponse(responseCode = "1500", description = "사용자를 찾을 수 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "1401", description = "신용등급이 낮습니다.", content = @Content),
 		@ApiResponse(responseCode = "1400", description = "땡겨쓰기는 자녀만 사용할 수 있습니다.", content = @Content),
@@ -87,12 +92,12 @@ public class LoanController {
 		@ApiResponse(responseCode = "1402", description = "땡겨쓰기 계좌 잔액이 부족합니다.", content = @Content),
 	})
 	@PostMapping()
-	public ResponseEntity<EnvelopeResponse<PostWithdrawLoanResponseDto>> withdrawLoan(
+	public ResponseEntity<EnvelopeResponse<CommonAmountResponseDto>> withdrawLoan(
 		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
 		@RequestBody PostWithdrawLoanRequestDto postWithdrawLoanRequestDto) {
 
 		return ResponseEntity.ok()
-			.body(EnvelopeResponse.<PostWithdrawLoanResponseDto>builder()
+			.body(EnvelopeResponse.<CommonAmountResponseDto>builder()
 				.code(HttpStatus.OK.value())
 				.data(loanService.withdrawLoan(member.getMemberId(), postCommonLoanRequestDto))
 				.build());
