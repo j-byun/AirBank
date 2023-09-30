@@ -32,7 +32,7 @@ public class GetCurrentSavingsResponseDto {
 			.expiredAt(savings.getExpiredAt())
 			.endedAt(savings.getEndedAt())
 			.status(savings.getStatus().getName())
-			.delayCount(savings.getMonth() - savings.getPaymentCount())
+			.delayCount(savings.getDelayCount())
 			.savingsItem(SavingsElement.from(savingsItem))
 			.build();
 	}
