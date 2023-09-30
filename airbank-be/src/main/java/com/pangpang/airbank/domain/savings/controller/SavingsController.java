@@ -159,6 +159,13 @@ public class SavingsController {
 				.build());
 	}
 
+	/**
+	 *  티끌모으기 송금
+	 *
+	 * @param postTransferSavingsRequestDto PostTransferSavingsRequestDto
+	 * @return ResponseEntity<EnvelopeResponse < CommonAmountResponseDto>>
+	 * @see SavingsService
+	 */
 	@PostMapping()
 	public ResponseEntity<EnvelopeResponse<CommonAmountResponseDto>> transferSavings(
 		@RequestBody PostTransferSavingsRequestDto postTransferSavingsRequestDto) {

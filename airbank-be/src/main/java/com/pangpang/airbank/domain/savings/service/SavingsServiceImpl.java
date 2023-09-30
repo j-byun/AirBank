@@ -183,9 +183,12 @@ public class SavingsServiceImpl implements SavingsService {
 	 *  자녀 계좌에서 티끌모으기 가상 계좌로 송금하는 메소드
 	 *
 	 * @param memberId Long
-	 * @param
-	 * @return 리턴하는 값 설명
-	 * @see 추가로_보면_좋은_클래스
+	 * @param postTransferSavingsRequestDto PostTransferSavingsRequestDto
+	 * @return CommonAmountResponseDto
+	 * @see MemberRepository
+	 * @see SavingsRepository
+	 * @see AccountRepository
+	 * @see TransferService
 	 */
 	@Transactional
 	@Override
