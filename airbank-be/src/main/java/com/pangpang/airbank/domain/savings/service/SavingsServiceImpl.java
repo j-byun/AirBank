@@ -19,7 +19,6 @@ import com.pangpang.airbank.domain.savings.dto.PatchCancelSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.dto.PatchCommonSavingsResponseDto;
 import com.pangpang.airbank.domain.savings.dto.PatchConfirmSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.dto.PostSaveSavingsRequestDto;
-import com.pangpang.airbank.domain.savings.dto.PostTransferSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.repository.SavingsItemRepository;
 import com.pangpang.airbank.domain.savings.repository.SavingsRepository;
 import com.pangpang.airbank.global.common.response.CommonAmountResponseDto;
@@ -169,13 +168,13 @@ public class SavingsServiceImpl implements SavingsService {
 	@Transactional
 	@Override
 	public CommonAmountResponseDto transferSavings(Long memberId,
-		PostTransferSavingsRequestDto postTransferSavingsRequestDto) {
+		Long savingsId) {
 
 		if (!memberRepository.existsByIdAndRoleEquals(memberId, MemberRole.CHILD)) {
 			throw new SavingsException(SavingsErrorInfo.TRANSFER_SAVINGS_PERMISSION_DENIED);
 		}
 
-		Savings savings = savingsRepository.findByIdAndStatusEquals(postTransferSavingsRequestDto.getId(),
+		Savings savings = savingsRepository.findByIdAndStatusEquals(savingsId,
 				SavingsStatus.PROCEEDING)
 			.orElseThrow(() -> new SavingsException(SavingsErrorInfo.NOT_FOUND_SAVINGS_IN_PROCEEDING));
 
