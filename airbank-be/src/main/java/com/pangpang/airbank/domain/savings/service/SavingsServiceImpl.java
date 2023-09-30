@@ -162,6 +162,17 @@ public class SavingsServiceImpl implements SavingsService {
 		}
 
 		savings.cancelSavings();
+
+		// 티끌모으기 잔액 자녀 계좌로 송금
+		Account mainAccount = accountRepository.findByMemberIdAndType(memberId, AccountType.MAIN_ACCOUNT)
+			.orElseThrow(() -> new AccountException(AccountErrorInfo.NOT_FOUND_ACCOUNT));
+		Account savingsAccount = accountRepository.findByMemberIdAndType(memberId, AccountType.SAVINGS_ACCOUNT)
+			.orElseThrow(() -> new AccountException(AccountErrorInfo.NOT_FOUND_SAVINGS_ACCOUNT));
+
+		TransferRequestDto transferRequestDto = TransferRequestDto.of(savingsAccount, mainAccount,
+			savings.getTotalAmount(), TransactionType.SAVINGS);
+		TransferResponseDto response = transferService.transfer(transferRequestDto);
+
 		return PatchCommonSavingsResponseDto.from(savings);
 	}
 
