@@ -121,24 +121,28 @@ public class Savings extends BaseTimeEntity {
 		this.status = SavingsStatus.REJECT;
 	}
 
+	public Long getAmountThisMonth() {
+		if (this.getMonth() - this.getPaymentCount() == 1) {
+			return this.getMyAmount() - this.getTotalAmount();
+		}
+		return this.getMonthlyAmount();
+	}
+
 	public void cancelSavings() {
 		this.status = SavingsStatus.FAIL;
 	}
 
-	public Boolean isTransferThisMonth() {
+	public Boolean isPaidThisMonth() {
 		LocalDate startDate = this.startedAt.plusMonths(this.paymentCount + this.delayCount);
 		LocalDate endDate = startDate.plusMonths(1);
 		LocalDate now = LocalDate.now();
 		return (!startDate.isBefore(now) && !startDate.equals(now)) || (!endDate.isAfter(now) && !endDate.equals(now));
 	}
 
-	public void finalTransfer(Long amount) {
-		this.totalAmount += amount;
-		this.paymentCount++;
-		this.endedAt = LocalDate.now();
-	}
-
-	public void nonFinalTransfer(Long amount) {
+	public void transferSavings(Long amount) {
+		if (this.getMonth() - this.getPaymentCount() == 1) {
+			this.endedAt = LocalDate.now();
+		}
 		this.totalAmount += amount;
 		this.paymentCount++;
 	}

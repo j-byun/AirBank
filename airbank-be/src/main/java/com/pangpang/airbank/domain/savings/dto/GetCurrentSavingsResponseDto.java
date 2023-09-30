@@ -15,10 +15,12 @@ public class GetCurrentSavingsResponseDto {
 	private Long myAmount;
 	private Long parentsAmount;
 	private Long monthlyAmount;
+	private Long thisMonthAmount;
 	private LocalDate startedAt;
 	private LocalDate expiredAt;
 	private LocalDate endedAt;
 	private String status;
+	private Boolean isPaid;
 	private Integer delayCount;
 	private SavingsElement savingsItem;
 
@@ -28,10 +30,12 @@ public class GetCurrentSavingsResponseDto {
 			.myAmount(savings.getMyAmount())
 			.parentsAmount(savings.getParentsAmount())
 			.monthlyAmount(savings.getMonthlyAmount())
+			.thisMonthAmount(savings.getAmountThisMonth())
 			.startedAt(savings.getStartedAt())
 			.expiredAt(savings.getExpiredAt())
 			.endedAt(savings.getEndedAt())
 			.status(savings.getStatus().getName())
+			.isPaid(savings.isPaidThisMonth())
 			.delayCount(savings.getDelayCount())
 			.savingsItem(SavingsElement.from(savingsItem))
 			.build();

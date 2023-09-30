@@ -183,29 +183,16 @@ public class SavingsServiceImpl implements SavingsService {
 		Account savingsAccount = accountRepository.findByMemberIdAndType(memberId, AccountType.SAVINGS_ACCOUNT)
 			.orElseThrow(() -> new AccountException(AccountErrorInfo.NOT_FOUND_SAVINGS_ACCOUNT));
 
-		if (savings.isTransferThisMonth()) {
+		if (savings.isPaidThisMonth()) {
 			throw new SavingsException(SavingsErrorInfo.ALREADY_TRANSFER_SAVINGS_THIS_MONTH);
 		}
 
-		Long amount;
-		// 마지막 납부면
-		if (savings.getMonth() - savings.getPaymentCount() == 1) {
-			amount = savings.getMyAmount() - savings.getTotalAmount();
-
-			TransferRequestDto transferRequestDto = TransferRequestDto.of(mainAccount, savingsAccount,
-				amount, TransactionType.SAVINGS);
-			TransferResponseDto response = transferService.transfer(transferRequestDto);
-
-			savings.finalTransfer(amount);
-			return CommonAmountResponseDto.from(response.getAmount());
-		}
-
-		amount = savings.getMonthlyAmount();
+		Long amount = savings.getAmountThisMonth();
 		TransferRequestDto transferRequestDto = TransferRequestDto.of(mainAccount, savingsAccount,
 			amount, TransactionType.SAVINGS);
 		TransferResponseDto response = transferService.transfer(transferRequestDto);
 
-		savings.nonFinalTransfer(amount);
+		savings.transferSavings(amount);
 		return CommonAmountResponseDto.from(response.getAmount());
 	}
 }
