@@ -19,6 +19,7 @@ import com.pangpang.airbank.domain.savings.dto.PatchCancelSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.dto.PatchCommonSavingsResponseDto;
 import com.pangpang.airbank.domain.savings.dto.PatchConfirmSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.dto.PostSaveSavingsRequestDto;
+import com.pangpang.airbank.domain.savings.dto.PostTransferSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.repository.SavingsItemRepository;
 import com.pangpang.airbank.domain.savings.repository.SavingsRepository;
 import com.pangpang.airbank.global.common.response.CommonAmountResponseDto;
@@ -143,6 +144,8 @@ public class SavingsServiceImpl implements SavingsService {
 	 * @return PatchCommonSavingsResponseDto
 	 * @see MemberRepository
 	 * @see SavingsRepository
+	 * @see AccountRepository
+	 * @see TransferService
 	 */
 	@Transactional
 	@Override
@@ -176,16 +179,24 @@ public class SavingsServiceImpl implements SavingsService {
 		return PatchCommonSavingsResponseDto.from(savings);
 	}
 
+	/**
+	 *  자녀 계좌에서 티끌모으기 가상 계좌로 송금하는 메소드
+	 *
+	 * @param memberId Long
+	 * @param
+	 * @return 리턴하는 값 설명
+	 * @see 추가로_보면_좋은_클래스
+	 */
 	@Transactional
 	@Override
 	public CommonAmountResponseDto transferSavings(Long memberId,
-		Long savingsId) {
+		PostTransferSavingsRequestDto postTransferSavingsRequestDto) {
 
 		if (!memberRepository.existsByIdAndRoleEquals(memberId, MemberRole.CHILD)) {
 			throw new SavingsException(SavingsErrorInfo.TRANSFER_SAVINGS_PERMISSION_DENIED);
 		}
 
-		Savings savings = savingsRepository.findByIdAndStatusEquals(savingsId,
+		Savings savings = savingsRepository.findByIdAndStatusEquals(postTransferSavingsRequestDto.getId(),
 				SavingsStatus.PROCEEDING)
 			.orElseThrow(() -> new SavingsException(SavingsErrorInfo.NOT_FOUND_SAVINGS_IN_PROCEEDING));
 
