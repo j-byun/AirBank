@@ -103,7 +103,7 @@ public class LoanController {
 	@Operation(summary = "땡겨쓰기 중도 상환", description = "자녀 계좌에서 땡겨쓰기 가상 계좌로 입금하는 API")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "땡겨쓰기 중도 상환 성공",
-			content = @Content(schema = @Schema(implementation = PostWithdrawLoanResponseDto.class))),
+			content = @Content(schema = @Schema(implementation = PostRepaidLoanResponseDto.class))),
 		@ApiResponse(responseCode = "1500", description = "사용자를 찾을 수 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "1303", description = "등록된 그룹이 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "1403", description = "이자가 상환되지 않았습니다.", content = @Content),
