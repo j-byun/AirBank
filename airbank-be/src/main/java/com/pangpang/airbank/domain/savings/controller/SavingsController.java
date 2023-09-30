@@ -166,6 +166,17 @@ public class SavingsController {
 	 * @return ResponseEntity<EnvelopeResponse < CommonAmountResponseDto>>
 	 * @see SavingsService
 	 */
+	@Operation(summary = "티끌모으기 송금", description = "자녀 계좌에서 티끌모으기 가상 계좌로 송금하는 API")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "티끌모으기 요청 수락/거절 성공",
+			content = @Content(schema = @Schema(implementation = CommonAmountResponseDto.class))),
+		@ApiResponse(responseCode = "1500", description = "사용자를 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1809", description = "티끌모으기 송금은 자녀만 가능합니다.", content = @Content),
+		@ApiResponse(responseCode = "1800", description = "진행중인 티끌모으기를 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1004", description = "등록된 계좌가 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1008", description = "등록된 티끌모으기 계좌가 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1810", description = "이번달에는 이미 티끌모으기 송금을 완료했습니다.", content = @Content),
+	})
 	@PostMapping()
 	public ResponseEntity<EnvelopeResponse<CommonAmountResponseDto>> transferSavings(
 		@RequestBody PostTransferSavingsRequestDto postTransferSavingsRequestDto) {
