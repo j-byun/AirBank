@@ -76,7 +76,7 @@ public class LoanServiceImpl implements LoanService {
 	 *  땡겨쓰기 가상계좌에서 자녀 계좌로 입금하는 메소드
 	 *
 	 * @param memberId Long
-	 * @param postWithdrawLoanRequestDto PostWithdrawLoanRequestDto
+	 * @param postCommonLoanRequestDto PostCommonLoanRequestDto
 	 * @return CommonAmountResponseDto
 	 * @see MemberRepository
 	 * @see LoanConstantProvider
@@ -90,7 +90,7 @@ public class LoanServiceImpl implements LoanService {
 	@Transactional
 	@Override
 	public CommonAmountResponseDto withdrawLoan(Long memberId,
-		PostWithdrawLoanRequestDto postWithdrawLoanRequestDto) {
+		PostCommonLoanRequestDto postCommonLoanRequestDto) {
 		Member child = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(MemberErrorInfo.NOT_FOUND_MEMBER));
 

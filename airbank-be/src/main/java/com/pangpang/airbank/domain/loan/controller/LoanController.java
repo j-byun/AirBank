@@ -10,13 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pangpang.airbank.domain.loan.dto.GetLoanResponseDto;
-<<<<<<< HEAD
 import com.pangpang.airbank.domain.loan.dto.PostCommonLoanRequestDto;
 import com.pangpang.airbank.domain.loan.dto.PostRepaidLoanResponseDto;
-import com.pangpang.airbank.domain.loan.dto.PostWithdrawLoanResponseDto;
-=======
-import com.pangpang.airbank.domain.loan.dto.PostWithdrawLoanRequestDto;
->>>>>>> a437bc3 (fix: amount를 받는 공통 responseDto로 수정)
 import com.pangpang.airbank.domain.loan.service.LoanService;
 import com.pangpang.airbank.global.aop.CheckGroup;
 import com.pangpang.airbank.global.common.response.CommonAmountResponseDto;
@@ -75,8 +70,8 @@ public class LoanController {
 	 *  땡겨쓰기 땡기기
 	 *
 	 * @param authenticatedMemberArgument AuthenticatedMemberArgument
-	 * @param postWithdrawLoanRequestDto PostWithdrawLoanRequestDto
-	 * @return ResponseEntity<EnvelopeResponse <CommonAmountResponseDto>>
+	 * @param postCommonLoanRequestDto PostCommonLoanRequestDto
+	 * @return ResponseEntity<EnvelopeResponse < CommonAmountResponseDto>>
 	 * @see LoanService
 	 */
 	@Operation(summary = "땡겨쓰기 땡기기", description = "땡겨쓰기 가상계좌에서 자녀 계좌로 입금하는 API")
@@ -94,12 +89,12 @@ public class LoanController {
 	@PostMapping()
 	public ResponseEntity<EnvelopeResponse<CommonAmountResponseDto>> withdrawLoan(
 		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
-		@RequestBody PostWithdrawLoanRequestDto postWithdrawLoanRequestDto) {
+		@RequestBody PostCommonLoanRequestDto postCommonLoanRequestDto) {
 
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<CommonAmountResponseDto>builder()
 				.code(HttpStatus.OK.value())
-				.data(loanService.withdrawLoan(member.getMemberId(), postCommonLoanRequestDto))
+				.data(loanService.withdrawLoan(authenticatedMemberArgument.getMemberId(), postCommonLoanRequestDto))
 				.build());
 	}
 
@@ -124,13 +119,13 @@ public class LoanController {
 	})
 	@PostMapping("/repaid")
 	public ResponseEntity<EnvelopeResponse<PostRepaidLoanResponseDto>> repaidLoan(
+		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
 		@RequestBody PostCommonLoanRequestDto postCommonLoanRequestDto) {
-		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(2L);
 
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<PostRepaidLoanResponseDto>builder()
 				.code(HttpStatus.OK.value())
-				.data(loanService.repaidLoan(member.getMemberId(), postCommonLoanRequestDto))
+				.data(loanService.repaidLoan(authenticatedMemberArgument.getMemberId(), postCommonLoanRequestDto))
 				.build());
 	}
 }
