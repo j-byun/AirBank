@@ -139,7 +139,7 @@ public class SavingsController {
 	 */
 	@Operation(summary = "티끌모으기 포기", description = "진행중인 티끌모으기를 포기하는 API, 자녀만 가능")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "티끌모으기 요청 수락/거절 성공",
+		@ApiResponse(responseCode = "200", description = "티끌모으기 포기 성공",
 			content = @Content(schema = @Schema(implementation = PatchCommonSavingsResponseDto.class))),
 		@ApiResponse(responseCode = "1500", description = "사용자를 찾을 수 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "1807", description = "티끌모으기 포기는 자녀만 가능합니다.", content = @Content),
@@ -169,7 +169,7 @@ public class SavingsController {
 	 */
 	@Operation(summary = "티끌모으기 송금", description = "자녀 계좌에서 티끌모으기 가상 계좌로 송금하는 API")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "티끌모으기 요청 수락/거절 성공",
+		@ApiResponse(responseCode = "200", description = "티끌모으기 송금 성공",
 			content = @Content(schema = @Schema(implementation = CommonAmountResponseDto.class))),
 		@ApiResponse(responseCode = "1500", description = "사용자를 찾을 수 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "1809", description = "티끌모으기 송금은 자녀만 가능합니다.", content = @Content),
@@ -198,6 +198,18 @@ public class SavingsController {
 	 * @return ResponseEntity<EnvelopeResponse < CommonAmountResponseDto>>
 	 * @see SavingsService
 	 */
+	@Operation(summary = "티끌모으기 지원금 송금", description = "티끌모으기가 완료되었을 때 부모가 승인을 하여 자녀의 계좌로 티끌모으기 금액 + 부모 지원금을 송금하는 API")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "티끌모으기 지원금 송금 성공",
+			content = @Content(schema = @Schema(implementation = CommonAmountResponseDto.class))),
+		@ApiResponse(responseCode = "1500", description = "사용자를 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1811", description = "티끌모으기 지원금 송금은 부모만 가능합니다.", content = @Content),
+		@ApiResponse(responseCode = "1307", description = "그룹을 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1800", description = "진행중인 티끌모으기를 찾을 수 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1812", description = "티끌모으기가 아직 완료되지 않았습니다.", content = @Content),
+		@ApiResponse(responseCode = "1004", description = "등록된 계좌가 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "1008", description = "등록된 티끌모으기 계좌가 없습니다.", content = @Content),
+	})
 	@PostMapping("/reward")
 	public ResponseEntity<EnvelopeResponse<CommonAmountResponseDto>> rewardSavings(
 		@RequestBody PostRewardSavingsRequestDto postRewardSavingsRequestDto, @RequestParam("group_id") Long groupId) {
