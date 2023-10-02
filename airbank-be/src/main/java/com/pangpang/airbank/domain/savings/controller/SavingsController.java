@@ -14,6 +14,7 @@ import com.pangpang.airbank.domain.savings.dto.GetCurrentSavingsResponseDto;
 import com.pangpang.airbank.domain.savings.dto.PatchCancelSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.dto.PatchCommonSavingsResponseDto;
 import com.pangpang.airbank.domain.savings.dto.PatchConfirmSavingsRequestDto;
+import com.pangpang.airbank.domain.savings.dto.PostRewardSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.dto.PostSaveSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.dto.PostTransferSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.service.SavingsService;
@@ -186,6 +187,18 @@ public class SavingsController {
 			.body(EnvelopeResponse.<CommonAmountResponseDto>builder()
 				.code(HttpStatus.OK.value())
 				.data(savingsService.transferSavings(member.getMemberId(), postTransferSavingsRequestDto))
+				.build());
+	}
+
+	@PostMapping("/reward")
+	public ResponseEntity<EnvelopeResponse<CommonAmountResponseDto>> rewardSavings(
+		@RequestBody PostRewardSavingsRequestDto postRewardSavingsRequestDto, @RequestParam("group_id") Long groupId) {
+		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
+		
+		return ResponseEntity.ok()
+			.body(EnvelopeResponse.<CommonAmountResponseDto>builder()
+				.code(HttpStatus.OK.value())
+				.data(savingsService.rewardSavings(member.getMemberId(), postRewardSavingsRequestDto, groupId))
 				.build());
 	}
 }
