@@ -190,11 +190,19 @@ public class SavingsController {
 				.build());
 	}
 
+	/**
+	 *  티끌모으기 지원금 송금
+	 *
+	 * @param postRewardSavingsRequestDto PostRewardSavingsRequestDto
+	 * @param groupId Long
+	 * @return ResponseEntity<EnvelopeResponse < CommonAmountResponseDto>>
+	 * @see SavingsService
+	 */
 	@PostMapping("/reward")
 	public ResponseEntity<EnvelopeResponse<CommonAmountResponseDto>> rewardSavings(
 		@RequestBody PostRewardSavingsRequestDto postRewardSavingsRequestDto, @RequestParam("group_id") Long groupId) {
 		AuthenticatedMemberArgument member = new AuthenticatedMemberArgument(1L);
-		
+
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<CommonAmountResponseDto>builder()
 				.code(HttpStatus.OK.value())

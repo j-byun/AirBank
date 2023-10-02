@@ -222,6 +222,19 @@ public class SavingsServiceImpl implements SavingsService {
 		return CommonAmountResponseDto.from(response.getAmount());
 	}
 
+	/**
+	 *  티끌모으기가 완료되었을 때 부모가 승인을 하여 자녀의 계좌로 티끌모으기 금액 + 부모 지원금을 송금하는 메소드
+	 *
+	 * @param memberId Long
+	 * @param postRewardSavingsRequestDto PostRewardSavingsRequestDto
+	 * @param groupId Long
+	 * @return CommonAmountResponseDto
+	 * @see MemberRepository
+	 * @see GroupRepository
+	 * @see SavingsRepository
+	 * @see AccountRepository
+	 * @see TransferService
+	 */
 	@Transactional
 	@Override
 	public CommonAmountResponseDto rewardSavings(Long memberId, PostRewardSavingsRequestDto postRewardSavingsRequestDto,
