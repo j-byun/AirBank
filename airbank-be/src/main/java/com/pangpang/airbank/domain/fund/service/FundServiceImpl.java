@@ -233,10 +233,12 @@ public class FundServiceImpl implements FundService {
 	public GetInterestResponseDto getInterest(Long memberId, Long groupId) {
 		LocalDate endDate = LocalDate.now();
 
-		Long overdueAmount = interestRepository.findOverAmountsByGroupIdAndActivatedFalseAndExpiredAtLessThanAndBilledAtLessThanEqual(
-			groupId, endDate, endDate);
-		Interest interest = interestRepository.findFirstByGroupIdAndActivatedFalseAndExpiredAtGreaterThanEqualAndBilledAtLessThanEqual(
-			groupId, endDate, endDate).orElseGet(Interest::new);
+		Long overdueAmount =
+			interestRepository.findOverAmountsByGroupIdAndActivatedFalseAndExpiredAtLessThanAndBilledAtLessThanEqual(
+				groupId, endDate, endDate);
+		Interest interest =
+			interestRepository.findFirstByGroupIdAndActivatedFalseAndExpiredAtGreaterThanEqualAndBilledAtLessThanEqual(
+				groupId, endDate, endDate).orElseGet(Interest::new);
 
 		return GetInterestResponseDto.of(interest, overdueAmount);
 	}

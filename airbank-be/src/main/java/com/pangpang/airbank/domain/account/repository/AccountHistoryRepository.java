@@ -15,7 +15,7 @@ import com.pangpang.airbank.global.meta.domain.TransactionType;
 public interface AccountHistoryRepository extends JpaRepository<AccountHistory, Long> {
 	// 이번 달 Account 별 송금/출금 금액 합계
 	@Query("""
-		SELECT sum(h.amount) as sumAmount, account, h.account.member.id as memberId FROM account_history h 
+		SELECT sum(h.amount) as sumAmount, account, h.account.member.id as memberId FROM account_history h
 		WHERE h.transactionType IN (:transactionType) AND h.transactionDistinction IN (:transactionDistinction)
 		AND YEAR(h.apiCreatedAt)=YEAR(:apiCreatedAt) AND MONTH(h.apiCreatedAt)=MONTH(:apiCreatedAt)
 		GROUP BY h.account""")
