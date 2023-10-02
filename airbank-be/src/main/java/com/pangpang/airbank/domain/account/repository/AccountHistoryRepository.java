@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.pangpang.airbank.domain.account.domain.Account;
 import com.pangpang.airbank.domain.account.domain.AccountHistory;
+import com.pangpang.airbank.domain.account.dto.AccountHistoryElement;
 import com.pangpang.airbank.domain.account.dto.SumAmountByAccount;
 import com.pangpang.airbank.global.meta.domain.TransactionDistinction;
 import com.pangpang.airbank.global.meta.domain.TransactionType;
@@ -22,4 +24,11 @@ public interface AccountHistoryRepository extends JpaRepository<AccountHistory, 
 	List<SumAmountByAccount> findAmountSumByAccountAndApiCreatedAt(@Param("apiCreatedAt") LocalDate apiCreatedAt,
 		@Param("transactionType") TransactionType[] transactionType,
 		@Param("transactionDistinction") TransactionDistinction[] transactionDistinction);
+
+	// AccountHistoryElement로 조회
+	@Query("select new com.pangpang.airbank.domain.account.dto.AccountHistoryElement(a.amount, a.apiCreatedAt, "
+		+ "a.transactionType, a.transactionDistinction, a.transactionPartner) "
+		+ "from account_history a "
+		+ "where a.account = :account")
+	List<AccountHistoryElement> findAllAccountHistoryByAccount(Account account);
 }
