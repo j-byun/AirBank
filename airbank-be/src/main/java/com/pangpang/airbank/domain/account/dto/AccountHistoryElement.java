@@ -14,14 +14,14 @@ public class AccountHistoryElement {
 	private LocalDateTime apiCreatedAt;
 	private TransactionType transactionType;
 	private TransactionDistinction transactionDistinction;
-	private Member transactionPartner;
+	private String transactionPartnerName;
 
 	public AccountHistoryElement(Long amount, LocalDateTime apiCreatedAt, TransactionType transactionType,
-		TransactionDistinction transactionDistinction, Member transactionPartner) {
+		TransactionDistinction transactionDistinction, String transactionPartnerName) {
 		this.amount = amount;
 		this.apiCreatedAt = apiCreatedAt;
 		this.transactionType = transactionType;
 		this.transactionDistinction = transactionDistinction;
-		this.transactionPartner = transactionPartner;
+		this.transactionPartnerName = transactionPartnerName;
 	}
 }

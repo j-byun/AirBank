@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.pangpang.airbank.domain.account.domain.Account;
 import com.pangpang.airbank.domain.account.domain.AccountHistory;
@@ -14,6 +15,7 @@ import com.pangpang.airbank.domain.account.dto.SumAmountByAccount;
 import com.pangpang.airbank.global.meta.domain.TransactionDistinction;
 import com.pangpang.airbank.global.meta.domain.TransactionType;
 
+@Repository
 public interface AccountHistoryRepository extends JpaRepository<AccountHistory, Long> {
 	// 이번 달 Account 별 송금/출금 금액 합계
 	@Query("""
@@ -27,7 +29,7 @@ public interface AccountHistoryRepository extends JpaRepository<AccountHistory, 
 
 	// AccountHistoryElement로 조회
 	@Query("select new com.pangpang.airbank.domain.account.dto.AccountHistoryElement(a.amount, a.apiCreatedAt, "
-		+ "a.transactionType, a.transactionDistinction, a.transactionPartner) "
+		+ "a.transactionType, a.transactionDistinction, a.transactionPartner.name) "
 		+ "from account_history a "
 		+ "where a.account = :account")
 	List<AccountHistoryElement> findAllAccountHistoryByAccount(Account account);
