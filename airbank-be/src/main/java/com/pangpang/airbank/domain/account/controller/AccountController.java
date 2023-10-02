@@ -97,6 +97,13 @@ public class AccountController {
 				.build());
 	}
 
+	/**
+	 * 거래 내역 조회
+	 *
+	 * @param authenticatedMemberArgument
+	 * @param accountType
+	 * @return ResponseEntity<EnvelopeResponse<GetAccountHistoryResponseDto>>
+	 */
 	@GetMapping("/history")
 	public ResponseEntity<EnvelopeResponse<GetAccountHistoryResponseDto>> inquireAccountHistory(
 		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument,

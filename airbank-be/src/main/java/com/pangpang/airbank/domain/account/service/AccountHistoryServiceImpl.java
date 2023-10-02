@@ -48,6 +48,13 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 		return accountHistory.getTransactionIdentifier();
 	}
 
+	/**
+	 * 거래 내역 조회
+	 *
+	 * @param memberId
+	 * @param accountType
+	 * @return GetAccountHistoryResponseDto
+	 */
 	@Transactional(readOnly = true)
 	@Override
 	public GetAccountHistoryResponseDto inquireAccountHistory(Long memberId, String accountType) {
@@ -61,6 +68,12 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
 		return GetAccountHistoryResponseDto.from(accountHistoryElements);
 	}
 
+	/**
+	 * 계좌 타입 조회
+	 *
+	 * @param accountType
+	 * @return AccountType
+	 */
 	private AccountType getAccountType(String accountType) {
 		if (accountType.equals(MAIN_ACCOUNT)) {
 			return AccountType.MAIN_ACCOUNT;
