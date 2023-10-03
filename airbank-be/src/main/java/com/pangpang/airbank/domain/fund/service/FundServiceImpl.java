@@ -445,6 +445,13 @@ public class FundServiceImpl implements FundService {
 		confiscationRepository.save(Confiscation.of(confiscationAmount, group));
 	}
 
+	/**
+	 *  부모 계좌에서 자녀 계좌로 용돈을 자동이체 하는 메소드, Cron
+	 *
+	 * @see FundManagementRepository
+	 * @see AccountRepository
+	 * @see TransferService
+	 */
 	@Transactional
 	@Override
 	public void transferAllowanceByCron() {
