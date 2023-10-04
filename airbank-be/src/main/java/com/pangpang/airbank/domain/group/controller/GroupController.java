@@ -22,6 +22,7 @@ import com.pangpang.airbank.global.resolver.Authentication;
 import com.pangpang.airbank.global.resolver.dto.AuthenticatedMemberArgument;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -54,7 +55,7 @@ public class GroupController {
 	})
 	@GetMapping()
 	public ResponseEntity<EnvelopeResponse<GetPartnersResponseDto>> getPartners(
-		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument) {
+		@Parameter(hidden = true) @Authentication AuthenticatedMemberArgument authenticatedMemberArgument) {
 		return ResponseEntity.ok()
 			.body(EnvelopeResponse.<GetPartnersResponseDto>builder()
 				.code(HttpStatus.OK.value())
@@ -83,7 +84,7 @@ public class GroupController {
 	})
 	@PostMapping()
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> enrollChild(
-		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
+		@Parameter(hidden = true) @Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
 		@RequestBody PostEnrollChildRequestDto postEnrollChildRequestDto) {
 
 		return ResponseEntity.status(HttpStatus.CREATED)
@@ -113,7 +114,7 @@ public class GroupController {
 	})
 	@PatchMapping("/confirm")
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> confirmEnrollmentChild(
-		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
+		@Parameter(hidden = true) @Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
 		@RequestBody PatchConfirmChildRequestDto patchConfirmChildRequestDto, @RequestParam("group_id") Long groupId) {
 
 		return ResponseEntity.ok()
@@ -145,7 +146,7 @@ public class GroupController {
 	})
 	@PostMapping("/fund")
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> saveFundManagement(
-		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
+		@Parameter(hidden = true) @Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
 		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto,
 		@RequestParam("group_id") Long groupId) {
 		return ResponseEntity.status(HttpStatus.CREATED)
@@ -177,7 +178,7 @@ public class GroupController {
 	})
 	@PatchMapping("/fund")
 	public ResponseEntity<EnvelopeResponse<PatchFundManagementResponseDto>> updateFundManagement(
-		@Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
+		@Parameter(hidden = true) @Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
 		@RequestBody CommonFundManagementRequestDto commonFundManagementRequestDto,
 		@RequestParam("group_id") Long groupId) {
 		return ResponseEntity.ok()
