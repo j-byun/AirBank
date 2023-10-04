@@ -291,6 +291,13 @@ public class SavingsServiceImpl implements SavingsService {
 		return CommonAmountResponseDto.from(response1.getAmount() + response2.getAmount());
 	}
 
+	/**
+	 *  티끌모으기 납부가 지연되었는지 확인하는 메소드
+	 *
+	 * @see SavingsRepository
+	 * @see AccountRepository
+	 * @see TransferService
+	 */
 	@Transactional
 	@Override
 	public void confirmDelaySavings() {

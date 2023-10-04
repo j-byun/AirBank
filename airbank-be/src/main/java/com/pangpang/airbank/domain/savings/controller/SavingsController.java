@@ -235,6 +235,11 @@ public class SavingsController {
 				.build());
 	}
 
+	/**
+	 *  티끌모으기 납부 지연 확인, Cron 테스트
+	 *
+	 * @see SavingsService
+	 */
 	@GetMapping("/delay-cron")
 	public ResponseEntity<EnvelopeResponse<Void>> confirmDelaySavings() {
 		savingsService.confirmDelaySavings();
