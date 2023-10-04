@@ -152,6 +152,16 @@ public class SavingsServiceImpl implements SavingsService {
 
 		// 티끌모으기 가상 계좌 생성
 		accountService.saveVirtualAccount(group.getChild().getId(), AccountType.SAVINGS_ACCOUNT);
+
+		// 알림
+		Member child = group.getChild();
+		Member parent = group.getParent();
+		SavingsItem savingsItem = savingsItemRepository.findBySavings(savings)
+			.orElseThrow(() -> new SavingsException(SavingsErrorInfo.NOT_FOUND_SAVINGS_ITEM));
+
+		notificationService.saveNotification(
+			CreateNotificationDto.ofSavings(child, parent, savingsItem, patchConfirmSavingsRequestDto.getIsAccept()));
+
 		return PatchCommonSavingsResponseDto.from(savings);
 	}
 

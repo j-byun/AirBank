@@ -80,4 +80,15 @@ public class CreateNotificationDto {
 			.notificationType(NotificationType.SAVINGS_CONFIRM)
 			.build();
 	}
+
+	public static CreateNotificationDto ofSavings(Member child, Member parent, SavingsItem savingsItem,
+		Boolean isAccept) {
+		return CreateNotificationDto.builder()
+			.content(String.format("%s님이 %s %s원 상품의 티끌 모으기를 %s 하였습니다.", parent.getName(), savingsItem.getName(),
+				savingsItem.getAmount().toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ","), isAccept ? "수락" : "거절"))
+			.senderId(parent.getId())
+			.receiverId(child.getId())
+			.notificationType(NotificationType.SAVINGS)
+			.build();
+	}
 }
