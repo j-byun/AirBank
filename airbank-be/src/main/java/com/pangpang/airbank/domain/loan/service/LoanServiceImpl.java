@@ -27,6 +27,8 @@ import com.pangpang.airbank.domain.loan.dto.PostRepaidLoanResponseDto;
 import com.pangpang.airbank.domain.member.domain.Member;
 import com.pangpang.airbank.domain.member.repository.MemberRepository;
 import com.pangpang.airbank.domain.member.service.MemberService;
+import com.pangpang.airbank.domain.notification.dto.CreateNotificationDto;
+import com.pangpang.airbank.domain.notification.service.NotificationService;
 import com.pangpang.airbank.global.common.response.CommonAmountResponseDto;
 import com.pangpang.airbank.global.error.exception.AccountException;
 import com.pangpang.airbank.global.error.exception.FundException;
@@ -42,6 +44,7 @@ import com.pangpang.airbank.global.meta.domain.AccountType;
 import com.pangpang.airbank.global.meta.domain.CreditRating;
 import com.pangpang.airbank.global.meta.domain.InterestRate;
 import com.pangpang.airbank.global.meta.domain.MemberRole;
+import com.pangpang.airbank.global.meta.domain.NotificationType;
 import com.pangpang.airbank.global.meta.domain.TransactionType;
 
 import lombok.RequiredArgsConstructor;
@@ -61,6 +64,7 @@ public class LoanServiceImpl implements LoanService {
 	private final InterestRepository interestRepository;
 	private final MemberService memberService;
 	private final ConfiscationRepository confiscationRepository;
+	private final NotificationService notificationService;
 
 	/**
 	 *  땡겨쓰기(한도, 땡겨쓴 금액)를 조회하는 메소드, 부모와 자녀가 조회 가능하다.
@@ -204,9 +208,10 @@ public class LoanServiceImpl implements LoanService {
 	/**
 	 *  이자를 생성하는 메소드, Cron
 	 *
-	 * @param type the type to convert the string to
-	 * @return 리턴하는 값 설명
-	 * @see 추가로_보면_좋은_클래스
+	 * @see InterestRepository
+	 * @see ConfiscationRepository
+	 * @see FundManagementRepository
+	 * @see NotificationService
 	 */
 	@Transactional
 	@Override
@@ -218,8 +223,12 @@ public class LoanServiceImpl implements LoanService {
 			Group group = interest.getGroup();
 			Member child = group.getChild();
 
-			Interest newInterest = Interest.of(group);
-			interestRepository.save(newInterest);
+			Optional<Interest> oldInterest = interestRepository.findByGroupAndActivatedFalseAndBilledAtGreaterThan(
+				group, today);
+
+			if (oldInterest.isEmpty()) {
+				interestRepository.save(Interest.of(group));
+			}
 
 			// 현재 압류 중인지 확인
 			if (confiscationRepository.existsByGroupIdAndActivatedTrue(group.getId())) {
@@ -232,10 +241,9 @@ public class LoanServiceImpl implements LoanService {
 			interest.updateAmount(fundManagement.getLoanAmount(),
 				InterestRate.ofRating(CreditRating.getCreditRating(child.getCreditScore()).getRating()));
 			interest.updateActivated(true);
-			
-			/*
-			알림 생성하기
-			 */
+
+			notificationService.saveNotification(
+				CreateNotificationDto.of("이자가 발생했습니다.", child, NotificationType.INTEREST));
 		}
 	}
 
