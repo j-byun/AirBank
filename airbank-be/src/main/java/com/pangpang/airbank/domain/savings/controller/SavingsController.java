@@ -234,4 +234,15 @@ public class SavingsController {
 						groupId))
 				.build());
 	}
+
+	@GetMapping("/delay-cron")
+	public ResponseEntity<EnvelopeResponse<Void>> confirmDelaySavings() {
+		savingsService.confirmDelaySavings();
+
+		return ResponseEntity.ok()
+			.body(EnvelopeResponse.<Void>builder()
+				.code(HttpStatus.OK.value())
+				.data(null)
+				.build());
+	}
 }
