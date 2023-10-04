@@ -57,6 +57,7 @@ public class SavingsServiceImpl implements SavingsService {
 	private final AccountRepository accountRepository;
 	private final TransferService transferService;
 	private final MemberService memberService;
+	private final SavingsConstantProvider savingsConstantProvider;
 
 	/**
 	 *  현재 진행중인 티끌모으기 정보를 조회하는 메소드
@@ -316,7 +317,7 @@ public class SavingsServiceImpl implements SavingsService {
 				savings.delay();
 			}
 
-			if (savings.getDelayCount() >= 3) {
+			if (savings.getDelayCount() >= savingsConstantProvider.getFailThreshold()) {
 				Group group = savings.getGroup();
 				Member child = group.getChild();
 				savings.updateStatus(SavingsStatus.FAIL);
