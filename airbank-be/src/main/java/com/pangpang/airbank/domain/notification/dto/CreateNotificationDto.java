@@ -13,6 +13,8 @@ public class CreateNotificationDto {
 	private String content;
 	private Long senderId;
 	private Long receiverId;
+	private Long groupId;
+	private Long savingsId;
 	private NotificationType notificationType;
 
 	public static CreateNotificationDto from(TransferRequestDto transferRequestDto, String type) {
@@ -44,6 +46,16 @@ public class CreateNotificationDto {
 			.senderId(null)
 			.receiverId(receiver.getId())
 			.notificationType(notificationType)
+			.build();
+	}
+
+	public static CreateNotificationDto ofGroupConfirm(Member child, Member parent, Long groupId) {
+		return CreateNotificationDto.builder()
+			.content(String.format("%s님에게 자녀 등록을 요청받았습니다.", parent.getName()))
+			.senderId(child.getId())
+			.receiverId(parent.getId())
+			.groupId(groupId)
+			.notificationType(NotificationType.GROUP_CONFIRM)
 			.build();
 	}
 }
