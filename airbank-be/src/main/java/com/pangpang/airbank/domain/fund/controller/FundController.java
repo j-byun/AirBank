@@ -312,20 +312,6 @@ public class FundController {
 	}
 
 	/**
-	 * 이자 미납 확인 cron
-	 * 저번 달 이자 미납 시, 신용점수 하락 및 알림
-	 * @return ResponseEntity<EnvelopeResponse < Void>>
-	 */
-	@GetMapping("/interest-pay-check-cron")
-	public ResponseEntity<EnvelopeResponse<Void>> checkNoPaymentInterests() {
-		fundService.checkNoPaymentInterests();
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(EnvelopeResponse.<Void>builder()
-				.code(HttpStatus.OK.value())
-				.build());
-	}
-
-	/**
 	 * 세금 미납 확인 cron
 	 * 저번 달 세금 미납시, 신용점수 하락 및 알림
 	 * @return ResponseEntity<EnvelopeResponse < Void>>
@@ -333,6 +319,20 @@ public class FundController {
 	@GetMapping("/tax-pay-check-cron")
 	public ResponseEntity<EnvelopeResponse<Void>> checkNoPaymentTaxes() {
 		fundService.checkNoPaymentTaxes();
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(EnvelopeResponse.<Void>builder()
+				.code(HttpStatus.OK.value())
+				.build());
+	}
+
+	/**
+	 * 이자 미납 확인 cron
+	 * 저번 달 이자 미납 시, 신용점수 하락 및 알림
+	 * @return ResponseEntity<EnvelopeResponse < Void>>
+	 */
+	@GetMapping("/interest-pay-check-cron")
+	public ResponseEntity<EnvelopeResponse<Void>> checkNoPaymentInterests() {
+		fundService.checkNoPaymentInterests();
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(EnvelopeResponse.<Void>builder()
 				.code(HttpStatus.OK.value())
