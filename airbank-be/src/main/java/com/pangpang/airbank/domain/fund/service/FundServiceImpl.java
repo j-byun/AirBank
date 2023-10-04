@@ -59,9 +59,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class FundServiceImpl implements FundService {
-
-	private static final Integer CONFISCATION_BASED_RATING = 7;
-
 	private final TransferService transferService;
 	private final TaxRepository taxRepository;
 	private final InterestRepository interestRepository;
@@ -72,6 +69,7 @@ public class FundServiceImpl implements FundService {
 	private final FundManagementRepository fundManagementRepository;
 	private final AccountHistoryRepository accountHistoryRepository;
 	private final MemberService memberService;
+	private final ConfiscationConstantProvider confiscationConstantProvider;
 
 	/**
 	 *  현재 세금 현황 조회
@@ -520,7 +518,8 @@ public class FundServiceImpl implements FundService {
 			Member child = group.getChild();
 
 			// 자녀가 7등급 이하인지 확인
-			if (CreditRating.getCreditRating(child.getCreditScore()).getRating() < CONFISCATION_BASED_RATING) {
+			if (CreditRating.getCreditRating(child.getCreditScore()).getRating()
+				< confiscationConstantProvider.getConfiscationThreshold()) {
 				continue;
 			}
 
