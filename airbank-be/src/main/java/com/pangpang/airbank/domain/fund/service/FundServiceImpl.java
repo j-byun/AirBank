@@ -39,8 +39,8 @@ import com.pangpang.airbank.domain.group.repository.GroupRepository;
 import com.pangpang.airbank.domain.member.domain.Member;
 import com.pangpang.airbank.domain.member.repository.MemberRepository;
 import com.pangpang.airbank.domain.member.service.MemberService;
-import com.pangpang.airbank.domain.notification.service.NotificationService;
 import com.pangpang.airbank.domain.notification.dto.CreateNotificationDto;
+import com.pangpang.airbank.domain.notification.service.NotificationService;
 import com.pangpang.airbank.global.error.exception.AccountException;
 import com.pangpang.airbank.global.error.exception.FundException;
 import com.pangpang.airbank.global.error.exception.GroupException;
@@ -185,6 +185,9 @@ public class FundServiceImpl implements FundService {
 		}
 	}
 
+	/**
+	 * 지난 달 미납 세금 확인 기능, Cron
+	 */
 	@Override
 	@Transactional
 	public void checkNoPaymentTaxes() {
@@ -290,13 +293,19 @@ public class FundServiceImpl implements FundService {
 			refundAmount, TransactionType.TAX_REFUND));
 	}
 
+	/**
+	 * 미납 세금 주인의 신용점수 하락 및 알림 발송
+	 * @param tax
+	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = RuntimeException.class)
 	public void createWarningTax(Tax tax) {
 		// 신용 점수 하락
 		memberService.updateCreditScoreByRate(tax.getGroup().getChild().getId(), -0.5);
 
 		// 세금 미납 알림
-		// notificationService.saveNotification();
+		notificationService.saveNotification(
+			CreateNotificationDto.of("지난 달 세금 미납으로 신용등급이 하락했습니다."
+				, tax.getGroup().getChild(), NotificationType.TAX));
 	}
 
 	/**

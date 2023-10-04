@@ -20,9 +20,8 @@ public interface TaxRepository extends JpaRepository<Tax, Long> {
 
 	// 이번 달 납부 안한 모든 세금
 	@Query("""
-		 	SELECT t FROM tax t JOIN FETCH t.group g, t.group.child c, t.group.parent p
-			WHERE t.activated=false
-			AND YEAR(t.expiredAt)=YEAR(:expiredAt) AND MONTH(t.expiredAt)=MONTH(:expiredAt)
+			SELECT t FROM tax t JOIN FETCH t.group g JOIN FETCH g.child
+			WHERE t.activated=false AND YEAR(t.expiredAt)=YEAR(:expiredAt) AND MONTH(t.expiredAt)=MONTH(:expiredAt)
 		""")
 	List<Tax> findAllByActivatedFalseAndExpiredAt_MonthValueAndExpiredAt_Year(LocalDate expiredAt);
 
