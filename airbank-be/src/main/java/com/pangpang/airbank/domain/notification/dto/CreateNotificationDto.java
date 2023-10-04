@@ -58,4 +58,13 @@ public class CreateNotificationDto {
 			.notificationType(NotificationType.GROUP_CONFIRM)
 			.build();
 	}
+
+	public static CreateNotificationDto ofGroup(Member child, Member parent, Boolean isAccept) {
+		return CreateNotificationDto.builder()
+			.content(String.format("%s님이 자녀 등록을 %s 하였습니다.", child.getName(), isAccept ? "수락" : "거절"))
+			.senderId(child.getId())
+			.receiverId(parent.getId())
+			.notificationType(NotificationType.GROUP)
+			.build();
+	}
 }
