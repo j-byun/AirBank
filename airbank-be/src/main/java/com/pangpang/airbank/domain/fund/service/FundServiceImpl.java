@@ -304,7 +304,7 @@ public class FundServiceImpl implements FundService {
 
 		// 세금 미납 알림
 		notificationService.saveNotification(
-			CreateNotificationDto.of("지난 달 세금 미납으로 신용등급이 하락했습니다."
+			CreateNotificationDto.of("지난 달 세금 미납으로 신용점수가 하락했습니다."
 				, tax.getGroup().getChild(), NotificationType.TAX));
 	}
 
