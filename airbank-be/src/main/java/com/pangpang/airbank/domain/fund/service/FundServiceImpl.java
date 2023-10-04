@@ -39,8 +39,8 @@ import com.pangpang.airbank.domain.group.repository.GroupRepository;
 import com.pangpang.airbank.domain.member.domain.Member;
 import com.pangpang.airbank.domain.member.repository.MemberRepository;
 import com.pangpang.airbank.domain.member.service.MemberService;
-import com.pangpang.airbank.domain.notification.dto.CreateNotificationDto;
 import com.pangpang.airbank.domain.notification.service.NotificationService;
+import com.pangpang.airbank.domain.notification.dto.CreateNotificationDto;
 import com.pangpang.airbank.global.error.exception.AccountException;
 import com.pangpang.airbank.global.error.exception.FundException;
 import com.pangpang.airbank.global.error.exception.GroupException;
@@ -74,8 +74,8 @@ public class FundServiceImpl implements FundService {
 	private final FundManagementRepository fundManagementRepository;
 	private final AccountHistoryRepository accountHistoryRepository;
 	private final MemberService memberService;
-	private final ConfiscationConstantProvider confiscationConstantProvider;
 	private final NotificationService notificationService;
+	private final ConfiscationConstantProvider confiscationConstantProvider;
 
 	/**
 	 *  현재 세금 현황 조회
@@ -185,6 +185,18 @@ public class FundServiceImpl implements FundService {
 		}
 	}
 
+	@Override
+	@Transactional
+	public void checkNoPaymentTaxes() {
+		// 지난 달 미납한 세금
+		LocalDate preMonthDate = LocalDate.now().minusMonths(1);
+		List<Tax> taxList = taxRepository.findAllByActivatedFalseAndExpiredAt_MonthValueAndExpiredAt_Year(preMonthDate);
+
+		for (Tax tax : taxList) {
+			createWarningTax(tax);
+		}
+	}
+
 	/**
 	 * 밀린 세금 금액
 	 *
@@ -276,6 +288,15 @@ public class FundServiceImpl implements FundService {
 			AccountType.MAIN_ACCOUNT).orElseThrow(() -> new AccountException(AccountErrorInfo.NOT_FOUND_ACCOUNT));
 		transferService.transfer(TransferRequestDto.of(senderAccount, receiverAccount,
 			refundAmount, TransactionType.TAX_REFUND));
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = RuntimeException.class)
+	public void createWarningTax(Tax tax) {
+		// 신용 점수 하락
+		memberService.updateCreditScoreByRate(tax.getGroup().getChild().getId(), -0.5);
+
+		// 세금 미납 알림
+		// notificationService.saveNotification();
 	}
 
 	/**
