@@ -230,7 +230,8 @@ public class SavingsServiceImpl implements SavingsService {
 			throw new SavingsException(SavingsErrorInfo.TRANSFER_SAVINGS_PERMISSION_DENIED);
 		}
 
-		Savings savings = savingsRepository.findByIdAndStatusEquals(postTransferSavingsRequestDto.getId(),
+		Savings savings = savingsRepository.findByIdAndStatusEqualsWithGroupAndParentAndChild(
+				postTransferSavingsRequestDto.getId(),
 				SavingsStatus.PROCEEDING)
 			.orElseThrow(() -> new SavingsException(SavingsErrorInfo.NOT_FOUND_SAVINGS_IN_PROCEEDING));
 
@@ -249,6 +250,21 @@ public class SavingsServiceImpl implements SavingsService {
 		TransferResponseDto response = transferService.transfer(transferRequestDto);
 
 		savings.transferSavings(amount);
+
+		// 알림(티끌 모으기 완료 시)
+		if (savings.getTotalAmount().equals(savings.getMyAmount()) && savings.getMonth()
+			.equals(savings.getPaymentCount())) {
+
+			Group group = savings.getGroup();
+			Member child = group.getChild();
+			Member parent = group.getParent();
+
+			SavingsItem savingsItem = savingsItemRepository.findBySavings(savings)
+				.orElseThrow(() -> new SavingsException(SavingsErrorInfo.NOT_FOUND_SAVINGS_ITEM));
+
+			notificationService.saveNotification(
+				CreateNotificationDto.ofSavingsRewardConfirm(child, parent, savingsItem));
+		}
 
 		// 신용 점수 증가
 		try {

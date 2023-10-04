@@ -91,4 +91,15 @@ public class CreateNotificationDto {
 			.notificationType(NotificationType.SAVINGS)
 			.build();
 	}
+
+	public static CreateNotificationDto ofSavingsRewardConfirm(Member child, Member parent, SavingsItem savingsItem) {
+		return CreateNotificationDto.builder()
+			.content(
+				String.format("%s님이 %s %s원 상품의 티끌 모으기를 완료 하였습니다.", child.getName(), savingsItem.getName(),
+					savingsItem.getAmount().toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")))
+			.senderId(child.getId())
+			.receiverId(parent.getId())
+			.notificationType(NotificationType.SAVINGS_REWARD_CONFIRM)
+			.build();
+	}
 }
