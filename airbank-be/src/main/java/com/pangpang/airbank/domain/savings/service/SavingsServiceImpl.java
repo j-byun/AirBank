@@ -231,8 +231,7 @@ public class SavingsServiceImpl implements SavingsService {
 		}
 
 		Savings savings = savingsRepository.findByIdAndStatusEqualsWithGroupAndParentAndChild(
-				postTransferSavingsRequestDto.getId(),
-				SavingsStatus.PROCEEDING)
+				postTransferSavingsRequestDto.getId(), SavingsStatus.PROCEEDING)
 			.orElseThrow(() -> new SavingsException(SavingsErrorInfo.NOT_FOUND_SAVINGS_IN_PROCEEDING));
 
 		Account mainAccount = accountRepository.findByMemberIdAndType(memberId, AccountType.MAIN_ACCOUNT)
