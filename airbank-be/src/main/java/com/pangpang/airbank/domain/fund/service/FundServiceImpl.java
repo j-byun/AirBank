@@ -47,6 +47,7 @@ import com.pangpang.airbank.global.error.info.FundErrorInfo;
 import com.pangpang.airbank.global.error.info.GroupErrorInfo;
 import com.pangpang.airbank.global.error.info.MemberErrorInfo;
 import com.pangpang.airbank.global.meta.domain.AccountType;
+import com.pangpang.airbank.global.meta.domain.CreditRating;
 import com.pangpang.airbank.global.meta.domain.MemberRole;
 import com.pangpang.airbank.global.meta.domain.TransactionDistinction;
 import com.pangpang.airbank.global.meta.domain.TransactionType;
@@ -58,6 +59,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class FundServiceImpl implements FundService {
+
+	private static final Integer CONFISCATION_BASED_RATING = 7;
+
 	private final TransferService transferService;
 	private final TaxRepository taxRepository;
 	private final InterestRepository interestRepository;
@@ -297,8 +301,9 @@ public class FundServiceImpl implements FundService {
 		// 신용 점수 증가
 		try {
 			memberService.updateCreditScoreByRate(memberId, 0.1);
-		} catch (MemberException e) {
-			log.info(e.getMessage());
+			log.info(memberId + "신용 점수 수정 SUCCESS");
+		} catch (RuntimeException e) {
+			log.info(memberId + "신용 점수 수정 FAIL");
 		}
 
 		return PostTransferInterestResponseDto.of(transferResponseDto, TransactionType.INTEREST);
@@ -489,6 +494,46 @@ public class FundServiceImpl implements FundService {
 				log.info(group.getId() + " 그룹 용돈 자동이체 SUCCESS / 이체 금액 : " + response.getAmount());
 			} catch (RuntimeException e) {
 				log.info(group.getId() + " 그룹 용돈 자동이체 FAIL");
+			}
+		}
+	}
+
+	/**
+	 *  신용등급이 7등급 이하인 경우 압류하는 메소드, Cron
+	 *
+	 * @see FundManagementRepository
+	 * @see ConfiscationRepository
+	 */
+	@Transactional
+	@Override
+	public void confiscateLoanByCron() {
+		// TODO: 매일 오전 00시에 CRON 동작
+		// 용돈 자동이체 메서드보다 먼저 실행되어야 함
+		List<FundManagement> fundManagements = fundManagementRepository.findAll();
+		Integer nowDay = LocalDate.now().getDayOfMonth();
+		for (FundManagement fundManagement : fundManagements) {
+			if (!fundManagement.getAllowanceDate().equals(nowDay)) {
+				continue;
+			}
+
+			Group group = fundManagement.getGroup();
+			Member child = group.getChild();
+
+			// 자녀가 7등급 이하인지 확인
+			if (CreditRating.getCreditRating(child.getCreditScore()).getRating() < CONFISCATION_BASED_RATING) {
+				continue;
+			}
+
+			// 현재 압류 중인지 확인
+			if (confiscationRepository.existsByGroupIdAndActivatedTrue(group.getId())) {
+				continue;
+			}
+
+			try {
+				confiscateLoan(child.getId(), group.getId());
+				log.info(group.getId() + " 자동 압류 SUCCESS");
+			} catch (RuntimeException e) {
+				log.info(group.getId() + " 자동 압류 FAIL");
 			}
 		}
 	}
