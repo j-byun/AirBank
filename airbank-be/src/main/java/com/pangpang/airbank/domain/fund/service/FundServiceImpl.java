@@ -627,9 +627,9 @@ public class FundServiceImpl implements FundService {
 
 			try {
 				confiscateLoan(child.getId(), group.getId());
-				log.info(group.getId() + " 자동 압류 SUCCESS");
+				log.info(group.getId() + "자동 압류 SUCCESS");
 			} catch (RuntimeException e) {
-				log.info(group.getId() + " 자동 압류 FAIL");
+				log.info(group.getId() + "자동 압류 FAIL");
 			}
 		}
 	}

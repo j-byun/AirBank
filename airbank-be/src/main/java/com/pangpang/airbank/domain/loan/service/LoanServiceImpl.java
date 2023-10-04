@@ -1,6 +1,7 @@
 package com.pangpang.airbank.domain.loan.service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import com.pangpang.airbank.domain.account.service.TransferService;
 import com.pangpang.airbank.domain.fund.domain.FundManagement;
 import com.pangpang.airbank.domain.fund.domain.Interest;
 import com.pangpang.airbank.domain.fund.dto.GetInterestResponseDto;
+import com.pangpang.airbank.domain.fund.repository.ConfiscationRepository;
 import com.pangpang.airbank.domain.fund.repository.FundManagementRepository;
 import com.pangpang.airbank.domain.fund.repository.InterestRepository;
 import com.pangpang.airbank.domain.fund.service.FundService;
@@ -38,6 +40,7 @@ import com.pangpang.airbank.global.error.info.LoanErrorInfo;
 import com.pangpang.airbank.global.error.info.MemberErrorInfo;
 import com.pangpang.airbank.global.meta.domain.AccountType;
 import com.pangpang.airbank.global.meta.domain.CreditRating;
+import com.pangpang.airbank.global.meta.domain.InterestRate;
 import com.pangpang.airbank.global.meta.domain.MemberRole;
 import com.pangpang.airbank.global.meta.domain.TransactionType;
 
@@ -57,6 +60,7 @@ public class LoanServiceImpl implements LoanService {
 	private final FundService fundService;
 	private final InterestRepository interestRepository;
 	private final MemberService memberService;
+	private final ConfiscationRepository confiscationRepository;
 
 	/**
 	 *  땡겨쓰기(한도, 땡겨쓴 금액)를 조회하는 메소드, 부모와 자녀가 조회 가능하다.
@@ -195,6 +199,44 @@ public class LoanServiceImpl implements LoanService {
 		fundManagement.minusLoanAmount(response.getAmount());
 
 		return PostRepaidLoanResponseDto.of(transferRequestDto.getAmount(), fundManagement.getLoanAmount());
+	}
+
+	/**
+	 *  이자를 생성하는 메소드, Cron
+	 *
+	 * @param type the type to convert the string to
+	 * @return 리턴하는 값 설명
+	 * @see 추가로_보면_좋은_클래스
+	 */
+	@Transactional
+	@Override
+	public void createInterestByCron() {
+		// TODO: 매일 오전 00시에 CRON 동작
+		LocalDate today = LocalDate.now();
+		List<Interest> interests = interestRepository.findAllByBilledAtAndActivatedFalse(today);
+		for (Interest interest : interests) {
+			Group group = interest.getGroup();
+			Member child = group.getChild();
+
+			Interest newInterest = Interest.of(group);
+			interestRepository.save(newInterest);
+
+			// 현재 압류 중인지 확인
+			if (confiscationRepository.existsByGroupIdAndActivatedTrue(group.getId())) {
+				continue;
+			}
+
+			FundManagement fundManagement = fundManagementRepository.findByGroup(group)
+				.orElseThrow(() -> new FundException(FundErrorInfo.NOT_FOUND_FUND_MANAGEMENT_BY_GROUP));
+
+			interest.updateAmount(fundManagement.getLoanAmount(),
+				InterestRate.ofRating(CreditRating.getCreditRating(child.getCreditScore()).getRating()));
+			interest.updateActivated(true);
+			
+			/*
+			알림 생성하기
+			 */
+		}
 	}
 
 }
