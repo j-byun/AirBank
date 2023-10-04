@@ -31,6 +31,12 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
 	Optional<Group> findByChildIdAndActivatedTrue(Long childId);
 
+	@Query("select g from group g "
+		+ "join fetch g.parent  "
+		+ "join fetch g.child "
+		+ "where g.activated = true")
+	Optional<Group> findByChildIdAndActivatedTrueWithParentAndChild(Long childId);
+
 	Optional<Group> findByIdAndParentId(Long id, Long parentId);
 
 	@Query("select case when count(m) > 0 then true else false end from group m "

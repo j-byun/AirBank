@@ -2,6 +2,7 @@ package com.pangpang.airbank.domain.notification.dto;
 
 import com.pangpang.airbank.domain.account.dto.TransferRequestDto;
 import com.pangpang.airbank.domain.member.domain.Member;
+import com.pangpang.airbank.domain.savings.domain.SavingsItem;
 import com.pangpang.airbank.global.meta.domain.NotificationType;
 
 import lombok.Builder;
@@ -52,8 +53,8 @@ public class CreateNotificationDto {
 	public static CreateNotificationDto ofGroupConfirm(Member child, Member parent, Long groupId) {
 		return CreateNotificationDto.builder()
 			.content(String.format("%s님에게 자녀 등록을 요청받았습니다.", parent.getName()))
-			.senderId(child.getId())
-			.receiverId(parent.getId())
+			.senderId(parent.getId())
+			.receiverId(child.getId())
 			.groupId(groupId)
 			.notificationType(NotificationType.GROUP_CONFIRM)
 			.build();
@@ -61,10 +62,22 @@ public class CreateNotificationDto {
 
 	public static CreateNotificationDto ofGroup(Member child, Member parent, Boolean isAccept) {
 		return CreateNotificationDto.builder()
-			.content(String.format("%s님이 자녀 등록을 %s 하였습니다.", child.getName(), isAccept ? "수락" : "거절"))
+			.content(String.format("%s님이 자녀 등록을 %s하였습니다.", child.getName(), isAccept ? "수락" : "거절"))
 			.senderId(child.getId())
 			.receiverId(parent.getId())
 			.notificationType(NotificationType.GROUP)
+			.build();
+	}
+
+	public static CreateNotificationDto ofSavingsConfirm(Member child, Member parent, Long groupId,
+		SavingsItem savingsItem) {
+		return CreateNotificationDto.builder()
+			.content(String.format("%s님에게 %s %s원 상품의 티끌 모으기를 요청 받았습니다.", child.getName(), savingsItem.getName(),
+				savingsItem.getAmount().toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")))
+			.senderId(child.getId())
+			.receiverId(parent.getId())
+			.groupId(groupId)
+			.notificationType(NotificationType.SAVINGS_CONFIRM)
 			.build();
 	}
 }
