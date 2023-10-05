@@ -1,5 +1,7 @@
 package com.pangpang.airbank.domain.savings.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.pangpang.airbank.domain.savings.dto.GetCurrentSavingsResponseDto;
 import com.pangpang.airbank.domain.savings.dto.PatchCancelSavingsRequestDto;
 import com.pangpang.airbank.domain.savings.dto.PatchCommonSavingsResponseDto;
@@ -13,7 +15,8 @@ import com.pangpang.airbank.global.common.response.CommonIdResponseDto;
 public interface SavingsService {
 	GetCurrentSavingsResponseDto getCurrentSavings(Long groupId);
 
-	CommonIdResponseDto saveSavings(Long memberId, PostSaveSavingsRequestDto postSaveSavingsRequestDto);
+	CommonIdResponseDto saveSavings(Long memberId, PostSaveSavingsRequestDto postSaveSavingsRequestDto,
+		MultipartFile file);
 
 	PatchCommonSavingsResponseDto confirmEnrollmentSavings(Long memberId,
 		PatchConfirmSavingsRequestDto patchConfirmSavingsRequestDto,

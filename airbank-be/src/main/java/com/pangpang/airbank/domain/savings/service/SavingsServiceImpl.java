@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.pangpang.airbank.domain.account.domain.Account;
 import com.pangpang.airbank.domain.account.dto.TransferRequestDto;
@@ -95,7 +96,8 @@ public class SavingsServiceImpl implements SavingsService {
 	 */
 	@Transactional
 	@Override
-	public CommonIdResponseDto saveSavings(Long memberId, PostSaveSavingsRequestDto postSaveSavingsRequestDto) {
+	public CommonIdResponseDto saveSavings(Long memberId, PostSaveSavingsRequestDto postSaveSavingsRequestDto,
+		MultipartFile file) {
 		if (!memberRepository.existsByIdAndRoleEquals(memberId, MemberRole.CHILD)) {
 			throw new SavingsException(SavingsErrorInfo.ENROLL_SAVINGS_PERMISSION_DENIED);
 		}
@@ -112,7 +114,7 @@ public class SavingsServiceImpl implements SavingsService {
 		}
 
 		Savings savings = Savings.of(group, postSaveSavingsRequestDto);
-		SavingsItem savingsItem = SavingsItem.of(savings, postSaveSavingsRequestDto);
+		SavingsItem savingsItem = SavingsItem.of(savings, postSaveSavingsRequestDto, file);
 
 		savingsRepository.save(savings);
 		savingsItemRepository.save(savingsItem);

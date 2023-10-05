@@ -1,6 +1,7 @@
 package com.pangpang.airbank.domain.savings.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.pangpang.airbank.domain.savings.dto.GetCurrentSavingsResponseDto;
 import com.pangpang.airbank.domain.savings.dto.PatchCancelSavingsRequestDto;
@@ -91,15 +94,17 @@ public class SavingsController {
 		@ApiResponse(responseCode = "1806", description = "이미 등록 대기중인 티끌모으기가 존재합니다.", content = @Content),
 		@ApiResponse(responseCode = "1803", description = "이미 진행중인 티끌모으기 존재합니다.", content = @Content)
 	})
-	@PostMapping("/item")
+	@PostMapping(value = "/item", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<EnvelopeResponse<CommonIdResponseDto>> saveSavings(
 		@Parameter(hidden = true) @Authentication AuthenticatedMemberArgument authenticatedMemberArgument,
-		@RequestBody PostSaveSavingsRequestDto postSaveSavingsRequestDto) {
+		@RequestPart("imageFile") MultipartFile imageFile,
+		@RequestPart PostSaveSavingsRequestDto postSaveSavingsRequestDto) {
 
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(EnvelopeResponse.<CommonIdResponseDto>builder()
 				.code(HttpStatus.CREATED.value())
-				.data(savingsService.saveSavings(authenticatedMemberArgument.getMemberId(), postSaveSavingsRequestDto))
+				.data(savingsService.saveSavings(authenticatedMemberArgument.getMemberId(), postSaveSavingsRequestDto,
+					imageFile))
 				.build());
 	}
 
